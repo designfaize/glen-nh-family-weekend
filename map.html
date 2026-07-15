@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glen, NH — Family Fun Map</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>">
+<style>
+  :root{
+    --pine:#14432e; --forest2:#2e7d52;
+    --sun:#e8a838; --sun-soft:#fbe9c6;
+    --bg:#f4f1ea; --ink:#1f2421; --muted:#5c6660; --line:#e3ddd0; --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;}
+  header.hero{background:linear-gradient(150deg,var(--pine),var(--forest2));color:#fff;
+    padding:36px 20px 32px;text-align:center;}
+  .kicker{letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;color:var(--sun-soft);}
+  header.hero h1{margin:8px 0 6px;font-size:clamp(24px,4.2vw,38px);line-height:1.12;text-wrap:balance;}
+  header.hero p{margin:6px auto 0;max-width:620px;color:#eaf3ec;font-size:15.5px;}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+    font-weight:700;font-size:14.5px;text-decoration:none;}
+  .btn-primary{background:var(--sun);color:#3a2a08;}
+  .btn-primary:hover{background:#f0b34a;}
+  .btn-ghost{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);color:#fff;}
+  .btn-ghost:hover{background:rgba(255,255,255,.22);}
+  .btn:focus-visible{outline:3px solid var(--sun-soft);outline-offset:2px;}
+  .wrap{max-width:1120px;margin:0 auto;padding:26px 20px 56px;}
+  .map-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;
+    box-shadow:0 1px 3px rgba(10,25,16,.08);}
+  .map-card img{width:100%;height:auto;display:block;border-radius:8px;}
+  .caption{text-align:center;color:var(--muted);font-size:13.5px;margin-top:12px;}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:12.5px;text-align:center;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="kicker">White Mountains &nbsp;•&nbsp; Family Weekend</div>
+  <h1>Glen, New Hampshire — Family Fun Map</h1>
+  <p>20 numbered stops within about an hour of basecamp at Yogi Bear's Jellystone Park, Glen Ellis — plus restaurant picks on the valley close-up.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="assets/Glen-NH-Family-Fun-Map.pdf" download="Glen-NH-Family-Fun-Map.pdf">⬇️ Download printable PDF</a>
+    <a class="btn btn-ghost" href="index.html">📖 Open the weekend guide</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="map-card">
+    <img src="assets/map.png" alt="Illustrated map of the Glen, NH area: a whole-region overview, a North Conway Valley close-up with numbered attraction dots and restaurant picks, and a trip key listing 20 stops grouped by drive time from Jellystone Glen Ellis.">
+  </div>
+  <p class="caption">Pinch or zoom to explore — the numbered dots match the Trip Map Key on the right. Orange dots on the close-up are restaurant picks.</p>
+
+  <footer>
+    Made for John's Glen, NH family weekend • Drive times are approximate from Jellystone Glen Ellis • Grab the PDF above for printing.
+  </footer>
+</div>
+</body>
+</html>

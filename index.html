@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glen, NH Family Weekend — Your Jellystone Basecamp Guide</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏕️</text></svg>">
+<style>
+  :root{
+    --forest:#1f5c3f; --forest2:#2e7d52; --pine:#14432e;
+    --sun:#e8a838; --sun-soft:#fbe9c6;
+    --sky:#3a7ca5; --stone:#f4f1ea; --ink:#1f2421; --muted:#5c6660;
+    --card:#ffffff; --line:#e3ddd0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--stone);line-height:1.55;}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px 64px;}
+  header.hero{background:linear-gradient(150deg,var(--pine),var(--forest2));color:#fff;
+    padding:44px 20px 40px;text-align:center;}
+  header.hero .inner{max-width:1020px;margin:0 auto;}
+  .kicker{letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;color:var(--sun-soft);opacity:.95;}
+  header.hero h1{margin:8px 0 6px;font-size:clamp(26px,4.4vw,42px);line-height:1.1;}
+  header.hero p{margin:6px auto 0;max-width:640px;color:#eaf3ec;font-size:16px;}
+  .basecamp{display:inline-block;margin-top:16px;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:8px 16px;font-size:14px;}
+  .basecamp b{color:#fff;}
+  section{margin-top:40px;}
+  h2{font-size:23px;margin:0 0 4px;color:var(--pine);display:flex;align-items:center;gap:10px;}
+  h2 .em{font-size:24px;}
+  .sub{color:var(--muted);margin:0 0 18px;font-size:15px;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;}
+  .pill{font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:16px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    box-shadow:0 1px 2px rgba(20,40,30,.04);display:flex;flex-direction:column;}
+  .card h3{margin:0 0 2px;font-size:17px;}
+  .card h3 a{color:inherit;text-decoration:none;border-bottom:2px solid var(--sun-soft);transition:border-color .15s;}
+  .card h3 a:hover{border-color:var(--sun);}
+  .card h3 a::after{content:" ↗";font-size:12px;color:var(--sky);border:none;}
+  .drive{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
+    color:var(--forest);background:#e7f2ea;border-radius:999px;padding:3px 10px;margin:6px 0 10px;align-self:flex-start;}
+  .drive.far{color:#9a5b12;background:#fbeede;}
+  .card p{margin:0;color:#39423c;font-size:14.5px;}
+  .tag{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--sky);margin-bottom:2px;}
+  .tag.coaster{color:#c0562b;}
+  .tag.wet{color:#2f7fa8;}
+  .tag.trail{color:#3f8a4f;}
+  .tag.rain{color:#7a5cc0;}
+  .tag.eat{color:#c0562b;}
+  .day{background:#fff;border:1px solid var(--line);border-left:6px solid var(--sun);border-radius:12px;
+    padding:18px 20px;margin-bottom:14px;}
+  .day h3{margin:0 0 10px;font-size:19px;color:var(--pine);}
+  .day .slot{display:flex;gap:14px;padding:9px 0;border-top:1px dashed var(--line);}
+  .day .slot:first-of-type{border-top:none;}
+  .day .when{flex:0 0 96px;font-weight:700;color:var(--sun);font-size:13.5px;padding-top:1px;}
+  .day .what{flex:1;font-size:14.5px;}
+  .day .what b{color:var(--ink);}
+  .day-cols{display:flex;gap:18px;align-items:stretch;}
+  .day-main{flex:1 1 auto;min-width:0;}
+  .day-camp{flex:0 0 216px;background:#eef6f0;border:1px solid #cfe3d5;border-radius:10px;padding:12px 14px;}
+  .day-camp-h{font-weight:700;color:var(--pine);font-size:12.5px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+  .day-camp ul{margin:0;padding:0;list-style:none;}
+  .day-camp li{font-size:12.6px;color:#3a4a40;margin:7px 0;line-height:1.3;display:flex;gap:7px;}
+  .day-camp li .ct{color:var(--forest);font-weight:700;flex:0 0 48px;}
+  .day-camp .fee{color:#c0562b;font-weight:700;}
+  .day-camp .note-line{font-size:12px;color:#5c6660;margin-top:8px;font-style:italic;}
+  @media(max-width:640px){.day-cols{flex-direction:column;}.day-camp{flex-basis:auto;}}
+  .tips{background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 22px;}
+  .tips li{margin:12px 0;font-size:14.5px;}
+  .note{background:var(--sun-soft);border:1px solid #eccf92;border-radius:10px;padding:12px 16px;font-size:14px;color:#6b4e14;margin-top:16px;}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;text-align:center;}
+  a{color:var(--sky);}
+  .circled{position:relative;overflow:visible;}
+  .scribble{position:absolute;top:-16px;left:-14px;width:calc(100% + 28px);height:calc(100% + 34px);pointer-events:none;z-index:6;overflow:visible;}
+  .drivehome{background:#f3eefb;border:1px solid #d9ccf0;border-radius:12px;padding:16px 20px;margin-top:18px;position:relative;}
+  .dh-inner{display:flex;gap:18px;align-items:center;}
+  .dh-inner h3{margin:0 0 4px;color:#5a3fa0;font-size:17px;}
+  .dh-inner p{margin:0;font-size:14.5px;color:#39423c;}
+  .dh-logo{flex:0 0 156px;width:156px;height:auto;align-self:center;display:block;}
+  .scribble-oval{position:absolute;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px);pointer-events:none;z-index:2;overflow:visible;}
+  .dh-tag{position:absolute;top:-24px;right:34px;font-family:'Comic Sans MS','Bradley Hand','Chalkboard SE',cursive;color:#e8352b;font-weight:bold;font-size:22px;transform:rotate(-6deg);z-index:3;}
+  .camp{background:#e7f2ea;border:1px solid #bcdcc7;border-left:6px solid var(--forest2);border-radius:12px;padding:14px 20px;margin:4px 0 18px;}
+  .camp h3{margin:0 0 6px;color:var(--pine);font-size:17px;}
+  .camp p{margin:0 0 8px;font-size:14.5px;color:#39423c;}
+  .camp .stamp{display:inline-block;background:#c0562b;color:#fff;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:999px;text-transform:uppercase;}
+  .cal-embed{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(20,40,30,.05);}
+  .cal-embed iframe{display:block;width:100%;height:600px;border:0;}
+  .btn-live{display:inline-block;margin:12px 0 4px;background:var(--forest2);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px;}
+  .btn-live:hover{background:var(--pine);}
+  .sched{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px;}
+  .sched table{width:100%;border-collapse:collapse;font-size:14px;}
+  .sched td{padding:8px 14px;border-top:1px solid var(--line);vertical-align:top;color:#39423c;}
+  .sched tr:first-child td{border-top:none;}
+  .sched .t{white-space:nowrap;font-weight:700;color:var(--forest);width:132px;}
+  .sched .paid{color:#c0562b;font-weight:700;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <div class="kicker">White Mountains &nbsp;•&nbsp; Family Weekend</div>
+    <h1>Glen, New Hampshire — Weekend of Fun</h1>
+    <p>Everything amazing within about an hour of your campsite — theme parks, mountain coasters, waterfalls, trains, restaurants, and rainy-day backups. Tap any name to open its website.</p>
+    <div class="basecamp">🏕️ Basecamp: <b>Yogi Bear's Jellystone Park — Glen Ellis</b>, 83 Glen Ellis Campground Rd, Glen, NH</div>
+    <div style="margin-top:2px;"><a class="basecamp" href="#builder" style="color:#fff;text-decoration:none;">🧩 Build your itinerary</a>
+    <a class="basecamp" href="map.html" style="color:#fff;text-decoration:none;margin-left:6px;">🗺️ Family Fun Map</a></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="legend">
+    <span class="pill">🟢 Green tag = 20 min or less</span>
+    <span class="pill">🟠 Orange tag = farther afield (worth the drive)</span>
+    <span class="pill">🎢 Coasters &nbsp; 🚂 Trains &nbsp; 💦 Water &nbsp; 🥾 Trails &nbsp; 🍔 Eats &nbsp; ☔ Rainy-day</span>
+  </div>
+
+  <!-- ITINERARY -->
+  <section id="plan">
+    <h2><span class="em">🗺️</span> Your day-by-day plan (Friday → Monday)</h2>
+    <p class="sub">Built around Jellystone. Mix and match — nothing here is locked in. Mornings out, afternoons flexible (parks get hot; the campground pool is a great reset).</p>
+
+    <div class="camp">
+      <span class="stamp">🎅 Christmas in July</span>
+      <h3>At Jellystone this weekend: "Santa's Summer Vacation"</h3>
+      <p>Your dates land on the <b>final weekend of Jellystone's "Santa's Summer Vacation" theme (July 6–19)</b> — expect Santa dropping by alongside Yogi, holiday-in-July crafts, and the everyday camp fun: the water zone (blasters, cannons, slides), pools &amp; swimming hole, jumping pillow, mini golf, and shaving-cream whiffle ball. (Come Monday July 20 it flips to the "Color Splash" theme.)</p>
+      <p style="font-size:13.5px;color:#5c6660;margin-bottom:0;">⏰ Jellystone doesn't post exact daily times far in advance, so <b>grab the printed activity schedule at check-in</b> (or the front-desk Google calendar) and slot the Santa/Yogi character meets and any foam/pool events around your park mornings. I've built the plan to leave camp afternoons open for exactly this.</p>
+    </div>
+
+    <div class="day">
+      <h3>Friday — Arrive &amp; settle in</h3>
+      <div class="day-cols">
+        <div class="day-main">
+          <div class="slot"><div class="when">Afternoon</div><div class="what">Check in at <b>Jellystone</b>, claim your site, and grab the printed activity schedule at the front desk.</div></div>
+          <div class="slot"><div class="when">Dinner</div><div class="what">Keep it easy and close — <b><a href="https://ciderconh.com/" target="_blank" rel="noopener">White Mountain Cider Co.</a></b> in Glen (3 min; famous cider donuts for dessert), or casual pub grub at <b>Almost There Tavern</b>.</div></div>
+          <div class="slot"><div class="when">Evening</div><div class="what">Kick off the trip with <b>Laser Tag</b> at Jellystone's Laser Tag Field (~8pm) — with Movie Night and a Fireside Social beforehand.</div></div>
+        </div>
+        <aside class="day-camp">
+          <div class="day-camp-h">🏕️ At Jellystone tonight</div>
+          <ul>
+            <li><span class="ct">6:00</span><span>Bear on the Prowl 🐻</span></li>
+            <li><span class="ct">7:00</span><span>Movie Night</span></li>
+            <li><span class="ct">7:00</span><span>Fireside Social</span></li>
+            <li><span class="ct">8:00</span><span>Laser Tag <span class="fee">$</span></span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+
+    <div class="day">
+      <h3>Saturday — Right in your backyard</h3>
+      <div class="day-cols">
+        <div class="day-main">
+          <div class="slot"><div class="when">Morning</div><div class="what"><b>Cranmore Mountain Adventure Park</b> (15 min, North Conway) — mountain coaster, giant swing, zips, and the aerial course. Get there near the 10am opening to beat lines and heat. <i>Alternative:</i> <b>Story Land</b> (3 min from camp) if you'd rather keep it to little-kid rides.</div></div>
+          <div class="slot"><div class="when">Lunch</div><div class="what">Eat right there at Cranmore — <b>Zip's Pub</b> at the base lodge (casual, kids' menu), or ride the scenic chairlift up to the <b>Meister Hut</b> at the summit for lunch with a view.</div></div>
+          <div class="slot"><div class="when">Afternoon</div><div class="what">Head back to <b>Jellystone</b> to cool off — pool, mini golf, the jumping pillow, and the <b>"Santa's Summer Vacation"</b> activities. Time your return around the Bear meets and Candy Bar Bingo (see the list →).</div></div>
+          <div class="slot"><div class="when">Evening</div><div class="what">Dinner at the <b><a href="https://www.redparkapub.com/" target="_blank" rel="noopener">Red Parka Pub</a></b> in Glen, then campfire s'mores back at Yogi's.</div></div>
+        </div>
+        <aside class="day-camp">
+          <div class="day-camp-h">🏕️ At Jellystone today</div>
+          <ul>
+            <li><span class="ct">1:00</span><span>GellyBall <span class="fee">$</span></span></li>
+            <li><span class="ct">2:00</span><span>Sport Activity with a Bear 🐻</span></li>
+            <li><span class="ct">3:00</span><span>Santa's Summer Vacation Party</span></li>
+            <li><span class="ct">4:00</span><span>Bear Visits 🐻</span></li>
+            <li><span class="ct">5:00</span><span>Candy Bar Bingo <span class="fee">$</span></span></li>
+            <li><span class="ct">7:00</span><span>Movie Night</span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+
+    <div class="day">
+      <h3>Sunday — Waterfalls &amp; big views</h3>
+      <div class="day-cols">
+        <div class="day-main">
+          <div class="slot"><div class="when">Morning</div><div class="what"><b>Diana's Baths</b> (15 min) — easy flat walk to cascades and wading pools. Go early for parking.</div></div>
+          <div class="slot"><div class="when">Midday</div><div class="what">Drive to the summit on the <b>Mt. Washington Auto Road</b> (20 min to the base), or ride the <b>Conway Scenic Railroad</b> for an air-conditioned, everyone-happy option.</div></div>
+          <div class="slot"><div class="when">Afternoon</div><div class="what">Cool off on the <b>Kancamagus Highway</b> swimming spots (Lower Falls / Rocky Gorge), then back to camp for the <b>last night of Santa's Summer Vacation</b>.</div></div>
+        </div>
+        <aside class="day-camp">
+          <div class="day-camp-h">🏕️ At Jellystone tonight</div>
+          <ul>
+            <li><span class="ct">4:00</span><span>Bear Visits 🐻</span></li>
+            <li><span class="ct">6:00</span><span>Bear on the Prowl 🐻</span></li>
+            <li><span class="ct">7:00</span><span>Movie Night</span></li>
+            <li><span class="ct">7:00</span><span>Fireside Social</span></li>
+            <li><span class="ct">8:00</span><span>Laser Tag <span class="fee">$</span></span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+
+    <div class="day">
+      <h3>Monday — Color Splash morning &amp; the drive home</h3>
+      <div class="day-cols">
+        <div class="day-main">
+          <div class="slot"><div class="when">Morning</div><div class="what">Today kicks off Jellystone's new <b>"Color Splash"</b> theme — squeeze in the opening activities and one last splash-zone/pool session while you pack. (Check-out is usually late morning — confirm at the desk.)</div></div>
+          <div class="slot"><div class="when">Late AM</div><div class="what">Roll out south on <b>I‑93</b> toward home.</div></div>
+          <div class="slot"><div class="when">Lunch</div><div class="what">Stop <b>before Funspot</b>: <b><a href="https://www.hartsturkeyfarm.com/" target="_blank" rel="noopener">Hart's Turkey Farm</a></b> in Meredith — a classic NH family spot ~10 min north of Weirs Beach — or, to eat earlier in the drive, <b><a href="https://www.woodstockinnbrewery.com/" target="_blank" rel="noopener">Woodstock Inn Station &amp; Brewery</a></b> right off I‑93 in North Woodstock.</div></div>
+          <div class="slot"><div class="when">Early PM</div><div class="what"><b><a href="https://www.funspotnh.com/" target="_blank" rel="noopener">Funspot</a></b> in Weirs Beach — one last arcade blowout, right on the way. Then finish the drive to Middleton (~1h40 from Funspot).</div></div>
+        </div>
+        <aside class="day-camp">
+          <div class="day-camp-h">🎨 At Jellystone this AM</div>
+          <ul>
+            <li><span>🌈 <b>New theme: Color Splash!</b></span></li>
+            <li><span>Morning pool &amp; water zone</span></li>
+            <li><span>Color / water play activities</span></li>
+          </ul>
+          <div class="note-line">Monday times post on the board that morning — check at breakfast.</div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="note">💡 If you have a third day or want a bigger adventure, make it a <b>Lincoln day</b> (~50 min): Clark's Bears + Whale's Tale or the Flume Gorge — all clustered together. See the "Worth the drive" section below.</div>
+
+    <div class="drivehome circled">
+      <svg class="scribble-oval" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M96,50 C96,25 76,8 50,8 C22,8 4,28 4,52 C4,77 27,93 53,92 C81,91 98,73 95,49 C93,37 89,27 77,19"
+              stroke="#e8352b" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path d="M99,56 C98,31 78,13 51,13 C24,13 7,32 7,56"
+              stroke="#e8352b" stroke-width="2" stroke-linecap="round" opacity="0.5" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <span class="dh-tag">On the way! ↴</span>
+      <div class="dh-inner">
+        <img class="dh-logo" src="assets/funspot-logo.png" alt="Funspot — Largest Arcade in the World">
+        <div>
+          <h3>🚗 Funspot is on the way home</h3>
+          <p><b>Funspot</b> (Weirs Beach) sits right on I‑93 — only ~15 min off the highway and barely a detour heading back toward Middleton, MA. Don't make it a special trip: <b>aim to stop on the drive up or the drive home.</b> It's also your ultimate rainy-day backup if the weather turns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JELLYSTONE SCHEDULE -->
+  <section id="jelly-schedule">
+    <h2><span class="em">🗓️</span> Jellystone's daily activity schedule</h2>
+    <p class="sub">This is the park's own live calendar (the same one on the guest dashboard) — it stays current, so check it each morning for the day's lineup and exact times.</p>
+
+    <p style="font-size:13px;color:#5c6660;margin:0 0 8px;">📱 The live calendar below loads in a web browser. If this area looks blank in a preview pane, tap <b>“Open the live calendar”</b> or use the printable list further down.</p>
+    <div class="cal-embed">
+      <iframe src="https://campersapp.com/embed/calendar/?b_bg=8F5A26&amp;h_bg=73C167&amp;e_bg=73C167&amp;e_fc=FFFFFF&amp;b_fc=FFFFFF&amp;sd=&amp;ed=&amp;pi=&amp;piv=14&amp;height=590&amp;cid=662" title="Jellystone Glen Ellis live activity calendar" loading="lazy" referrerpolicy="no-referrer"></iframe>
+    </div>
+    <a class="btn-live" href="https://glenellisjellystone.com/guest-dashboard" target="_blank" rel="noopener">Open the live calendar ↗</a>
+
+    <p class="sub" style="margin-top:20px;">If the live calendar doesn't load in your viewer, here's the <b>"Santa's Summer Vacation" daytime lineup</b> you'll see (afternoon/evening shown; mornings add pool &amp; water-zone time). <span class="paid">$</span> = small extra fee · 🐻 = Yogi/character appearance.</p>
+    <div class="sched">
+      <table>
+        <tr><td class="t">12:00–1:00pm</td><td>Sport Activity — Sports Courts / Play Field</td></tr>
+        <tr><td class="t">12:00–12:30pm</td><td>Santa's Summer Vacation Activity — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">12:00–12:30pm</td><td>Santa's Summer Vacation Craft — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">1:00–2:00pm</td><td>GellyBall — GellyBall Field <span class="paid">$</span></td></tr>
+        <tr><td class="t">2:00–2:30pm</td><td>Sport Activity with a Bear 🐻 — Sports Courts</td></tr>
+        <tr><td class="t">3:00–4:00pm</td><td>Santa's Summer Vacation Craft — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">3:00–4:00pm</td><td>Santa's Summer Vacation Party — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">4:00–5:00pm</td><td>Bear Visits 🐻</td></tr>
+        <tr><td class="t">4:00–5:00pm</td><td>Coloring Pages — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">5:00–5:30pm</td><td>Candy Bar Bingo — Arts &amp; Crafts Pavilion <span class="paid">$</span></td></tr>
+        <tr><td class="t">6:00–6:30pm</td><td>Bear on the Prowl 🐻</td></tr>
+        <tr><td class="t">6:30–7:00pm</td><td>Santa's Summer Vacation Activity with a Bear 🐻 — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">7:00–8:30pm</td><td>Movie Night — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">7:00–8:00pm</td><td>Fireside Social — Arts &amp; Crafts Pavilion</td></tr>
+        <tr><td class="t">8:00–9:00pm</td><td>Laser Tag — Laser Tag Field <span class="paid">$</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ITINERARY BUILDER -->
+  <style>
+    .pl-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 10px;}
+    .pl-btn{font-family:inherit;font-size:13.5px;font-weight:700;padding:8px 14px;border-radius:999px;
+      border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;}
+    .pl-btn:hover{border-color:var(--forest2);}
+    .pl-btn:focus-visible{outline:3px solid var(--sun-soft);outline-offset:1px;}
+    .pl-btn-primary{background:var(--forest2);border-color:var(--forest2);color:#fff;}
+    .pl-btn-primary:hover{background:var(--pine);}
+    .pl-btn-danger{color:#a33326;}
+    .pl-status{font-size:13px;font-weight:700;color:var(--forest2);}
+    .pl-banner{background:#e8f1fb;border:1px solid #bcd6ef;border-radius:10px;padding:10px 14px;
+      font-size:13.5px;color:#274d6e;margin:0 0 12px;}
+    .pl-layout{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start;}
+    @media(max-width:820px){.pl-layout{grid-template-columns:1fr;}}
+    .pl-palette{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;
+      position:sticky;top:10px;max-height:88vh;display:flex;flex-direction:column;}
+    @media(max-width:820px){.pl-palette{position:static;max-height:none;}}
+    .pl-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+    .pl-tab{font-family:inherit;font-size:12px;font-weight:700;padding:5px 9px;border-radius:999px;
+      border:1px solid var(--line);background:var(--stone);color:var(--muted);cursor:pointer;}
+    .pl-tab.on{background:var(--pine);border-color:var(--pine);color:#fff;}
+    .pl-tabnote{font-size:11.5px;color:var(--muted);margin:0 0 8px;font-style:italic;}
+    .pl-chips{overflow-y:auto;display:flex;flex-direction:column;gap:6px;min-height:120px;max-height:46vh;padding:2px;}
+    @media(max-width:820px){.pl-chips{max-height:38vh;}}
+    .pl-chip{font-family:inherit;display:flex;justify-content:space-between;gap:8px;align-items:baseline;text-align:left;
+      font-size:13px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff;
+      cursor:grab;color:var(--ink);}
+    .pl-chip:hover{border-color:var(--forest2);background:#f3f9f4;}
+    .pl-chip.sel{border-color:var(--sun);background:var(--sun-soft);box-shadow:0 0 0 2px var(--sun);}
+    .pl-chip .nm{font-weight:600;}
+    .pl-chip .tm{font-size:11.5px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+    .pl-chip .fee{color:#c0562b;font-weight:700;}
+    .pl-custom{display:flex;gap:6px;margin-top:10px;}
+    .pl-custom input{flex:1;min-width:0;font-family:inherit;font-size:13px;padding:7px 10px;
+      border:1px solid var(--line);border-radius:9px;background:var(--stone);}
+    .pl-custom input:focus{outline:2px solid var(--forest2);}
+    .pl-hint{margin-top:10px;background:var(--sun-soft);border:1px solid #eccf92;border-radius:9px;
+      padding:8px 10px;font-size:12.5px;color:#6b4e14;font-weight:600;}
+    .pl-days{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;}
+    .pl-day{background:#fff;border:1px solid var(--line);border-top:5px solid var(--sun);border-radius:12px;padding:12px 12px 10px;}
+    .pl-day h3{margin:0 0 2px;font-size:15.5px;color:var(--pine);}
+    .pl-day .dnote{font-size:11.5px;color:var(--muted);margin:0 0 8px;}
+    .pl-slotname{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sun);margin:8px 0 4px;}
+    .pl-drop{list-style:none;margin:0;padding:4px;min-height:38px;border:1.5px dashed var(--line);border-radius:8px;
+      display:flex;flex-direction:column;gap:4px;background:var(--stone);}
+    .pl-drop.over{border-color:var(--forest2);background:#e7f2ea;}
+    .pl-entry{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+      border-left:4px solid var(--forest2);border-radius:7px;padding:5px 6px 5px 8px;font-size:12.5px;cursor:grab;}
+    .pl-entry .en{flex:1;min-width:0;font-weight:600;line-height:1.25;}
+    .pl-entry .et{display:block;font-size:11px;color:var(--muted);font-weight:400;}
+    .pl-entry .pl-x{flex-shrink:0;font-family:inherit;border:0;background:none;color:#a33326;font-size:15px;font-weight:700;
+      cursor:pointer;padding:0 3px;line-height:1;border-radius:4px;}
+    .pl-entry .pl-x:hover{background:#fbe4e0;}
+    .pl-empty-hint{font-size:11px;color:#b9b2a4;text-align:center;margin:auto 0;}
+    @media print{
+      body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
+      body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
+      body.print-plan .pl-hint{display:none !important;}
+      body.print-plan .pl-layout{grid-template-columns:1fr;}
+      .pl-drop{border-style:solid;}
+    }
+  </style>
+
+  <section id="builder">
+    <h2><span class="em">🧩</span> Build your own itinerary</h2>
+    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device.</p>
+
+    <div class="pl-toolbar">
+      <button type="button" id="pl-share" class="pl-btn pl-btn-primary">🔗 Copy share link</button>
+      <button type="button" id="pl-print" class="pl-btn">🖨️ Print my plan</button>
+      <button type="button" id="pl-clear" class="pl-btn pl-btn-danger">🗑️ Clear plan</button>
+      <span id="pl-status" class="pl-status" role="status" aria-live="polite"></span>
+    </div>
+    <div id="pl-banner" class="pl-banner" hidden></div>
+
+    <div class="pl-layout">
+      <div class="pl-palette">
+        <div class="pl-tabs" id="pl-tabs" role="tablist"></div>
+        <p class="pl-tabnote" id="pl-tabnote"></p>
+        <div class="pl-chips" id="pl-chips"></div>
+        <div class="pl-custom">
+          <input id="pl-custom-input" type="text" maxlength="60" placeholder="Add your own… e.g. Nap time" aria-label="Add a custom activity">
+          <button type="button" id="pl-custom-add" class="pl-btn">＋ Add</button>
+        </div>
+        <div class="pl-hint" id="pl-hint" hidden></div>
+      </div>
+      <div class="pl-days" id="pl-days"></div>
+    </div>
+  </section>
+
+  <script>
+  (function(){
+  "use strict";
+  /* Item order is load-bearing: share links store array indices. Append only — never reorder or delete. */
+  var ITEMS=[
+    // Friday Jul 17 — camp events from 3pm (arrival) on
+    {g:"f",n:"Santa's Vacation Craft",t:"3:00–4:00 · A&C Pavilion"},
+    {g:"f",n:"Santa's Vacation Party 🎅",t:"3:00–4:00 · A&C Pavilion"},
+    {g:"f",n:"Bear Visits 🐻",t:"4:00–5:00 · $"},
+    {g:"f",n:"Coloring Pages",t:"4:00–5:00 · A&C Pavilion"},
+    {g:"f",n:"Candy Bar Bingo",t:"5:00–5:30 · $"},
+    {g:"f",n:"Bear on the Prowl 🐻",t:"6:00–6:30"},
+    {g:"f",n:"Vacation Activity w/ Bear 🐻",t:"6:30–7:00 · A&C Pavilion"},
+    {g:"f",n:"Movie Night 🎬",t:"7:00–8:30 · A&C Pavilion"},
+    {g:"f",n:"Fireside Social 🔥",t:"7:00–8:00 · A&C Pavilion"},
+    {g:"f",n:"Laser Tag",t:"8:00–9:00 · $ · Laser Tag Field"},
+    // Saturday Jul 18
+    {g:"s",n:"Bear Mail Pickup ✉️",t:"9:00–9:30 · Ranger Station"},
+    {g:"s",n:"Wake Up with a Bear 🐻",t:"9:00–9:30 · Ranger Station"},
+    {g:"s",n:"Yogi Bear™ Cartoons",t:"10:00–2:00 · A&C Pavilion"},
+    {g:"s",n:"Ceramics",t:"10:00–10:30 · $"},
+    {g:"s",n:"Pizza Party with a Bear 🐻",t:"11:30–12:00 · $ · Food Pavilion"},
+    {g:"s",n:"Scavenger Hunt!",t:"12:00–4:00 · Ranger Station"},
+    {g:"s",n:"Santa's Vacation Activity",t:"12:00–12:30 · A&C Pavilion"},
+    {g:"s",n:"Santa's Vacation Craft",t:"12:00–12:30 · A&C Pavilion"},
+    {g:"s",n:"Tie Dye",t:"1:00–1:30 · $"},
+    {g:"s",n:"Santa Visit 🎅",t:"2:00–3:00 · A&C Pavilion"},
+    {g:"s",n:"Vacation Foam Party 💦",t:"2:00–2:30 · Water Zone"},
+    {g:"s",n:"Glitter Tattoos ✨",t:"3:00–3:30 · $"},
+    {g:"s",n:"Bear Visits 🐻",t:"4:00–5:00 · $"},
+    {g:"s",n:"Coloring Pages",t:"4:00–5:00 · A&C Pavilion"},
+    {g:"s",n:"Candy Bar Bingo",t:"5:00–5:30 · $"},
+    {g:"s",n:"Bear on the Prowl 🐻",t:"6:00–6:30"},
+    {g:"s",n:"Vacation Activity w/ Bear 🐻",t:"6:30–7:00 · A&C Pavilion"},
+    {g:"s",n:"Live Music 🎸",t:"7:00–10:00 · A&C Pavilion"},
+    {g:"s",n:"Fireside Social 🔥",t:"7:00–8:00 · A&C Pavilion"},
+    {g:"s",n:"Laser Tag",t:"8:00–9:00 · $ · Laser Tag Field"},
+    {g:"s",n:"Movie Night 🎬",t:"9:00–10:30 · A&C Pavilion"},
+    // Sunday Jul 19
+    {g:"u",n:"Bear Mail Pickup ✉️",t:"9:00–9:30 · Ranger Station"},
+    {g:"u",n:"Wake Up with a Bear 🐻",t:"9:00–9:30 · Ranger Station"},
+    {g:"u",n:"Breakfast with a Bear 🐻",t:"10:00–12:00 · $ · Food Pavilion"},
+    {g:"u",n:"Yogi Bear™ Cartoons",t:"10:00–2:00 · A&C Pavilion"},
+    {g:"u",n:"Sand Art",t:"11:00–11:30 · $"},
+    {g:"u",n:"Stuff-A-Plush 🧸",t:"11:00–11:30 · $"},
+    {g:"u",n:"Scavenger Hunt!",t:"12:00–4:00 · Ranger Station"},
+    {g:"u",n:"Santa's Vacation Craft",t:"12:00–1:00 · A&C Pavilion"},
+    {g:"u",n:"Santa's Vacation Activity",t:"12:00–12:30 · A&C Pavilion"},
+    {g:"u",n:"GellyBall",t:"1:00–2:00 · $ · GellyBall Field"},
+    {g:"u",n:"Sport Activity w/ Bear 🐻",t:"2:00–2:30 · Sports Courts"},
+    {g:"u",n:"Bear Visits 🐻",t:"4:00–5:00 · $"},
+    {g:"u",n:"Coloring Pages",t:"4:00–5:00 · A&C Pavilion"},
+    {g:"u",n:"Candy Bar Bingo",t:"5:00–5:30 · $"},
+    {g:"u",n:"Bear on the Prowl 🐻",t:"6:00–6:30"},
+    {g:"u",n:"Vacation Activity w/ Bear 🐻",t:"6:30–7:00 · A&C Pavilion"},
+    {g:"u",n:"Vacation Karaoke 🎤",t:"7:00–9:00 · A&C Pavilion"},
+    {g:"u",n:"Fireside Social 🔥",t:"7:00–8:00 · A&C Pavilion"},
+    {g:"u",n:"Glow Wagon Ride ✨",t:"8:00–8:30 · Playground"},
+    {g:"u",n:"Movie Night 🎬",t:"9:00–10:30 · A&C Pavilion"},
+    // Monday Jul 20 — Color Splash begins; checkout morning
+    {g:"m",n:"Bear Mail Pickup ✉️",t:"9:00–9:30 · Ranger Station"},
+    {g:"m",n:"Wake Up with a Bear 🐻",t:"9:00–9:30 · Ranger Station"},
+    {g:"m",n:"Ceramics",t:"10:00–3:00 · $"},
+    {g:"m",n:"Craft Creations",t:"10:00–3:00 · $"},
+    {g:"m",n:"Sand Art",t:"10:00–3:00 · $"},
+    {g:"m",n:"Stuff-A-Plush 🧸",t:"10:00–3:00 · $"},
+    {g:"m",n:"Yogi Bear™ Cartoons",t:"10:00–3:00 · A&C Pavilion"},
+    {g:"m",n:"Bubbles with a Bear 🐻",t:"12:00–12:30 · Ranger Station"},
+    {g:"m",n:"Cornhole",t:"12:30–1:30 · Rec Field"},
+    {g:"m",n:"Color Splash Competition 🌈",t:"2:00–2:30 · A&C Pavilion"},
+    {g:"m",n:"Scavenger Hunt!",t:"12:00–4:00 · Ranger Station"},
+    {g:"m",n:"Coloring Pages",t:"12:00–5:00 · A&C Pavilion"},
+    // Attractions
+    {g:"a",n:"Story Land",t:"3 min"},
+    {g:"a",n:"Living Shores Aquarium ☔",t:"3 min"},
+    {g:"a",n:"Cranmore Adventure Park 🎢",t:"15 min"},
+    {g:"a",n:"Diana's Baths 💦",t:"15 min"},
+    {g:"a",n:"Conway Scenic Railroad 🚂",t:"12 min"},
+    {g:"a",n:"Echo Lake & Cathedral Ledge",t:"15 min"},
+    {g:"a",n:"Kancamagus Hwy swimming 💦",t:"15 min"},
+    {g:"a",n:"Mt. Washington Auto Road 🏔️",t:"20 min"},
+    {g:"a",n:"Jackson Falls & Village 💦",t:"12 min"},
+    {g:"a",n:"Great Glen Trails 🥾",t:"20 min"},
+    {g:"a",n:"Glen Ellis Falls 💦",t:"20 min"},
+    {g:"a",n:"Santa's Village 🎅",t:"~45 min"},
+    {g:"a",n:"Cog Railway 🚂",t:"~40 min"},
+    {g:"a",n:"Clark's Bears 🐻",t:"~50 min"},
+    {g:"a",n:"Whale's Tale Waterpark 💦",t:"~50 min"},
+    {g:"a",n:"Alpine Adventures 🎢",t:"~50 min"},
+    {g:"a",n:"Flume Gorge 🥾",t:"~55 min"},
+    {g:"a",n:"Lost River & Boulder Caves",t:"~55 min"},
+    {g:"a",n:"Funspot Arcade 🕹️",t:"~1 hr 15"},
+    {g:"a",n:"Gunstock Adventure Park 🎢",t:"~1 hr 15"},
+    {g:"a",n:"Weirs Beach & Lake Cruise 💦",t:"~1 hr 15"},
+    {g:"a",n:"North Conway shopping ☔",t:"12 min"},
+    {g:"a",n:"Jellystone pool & water zone",t:"at camp"},
+    {g:"a",n:"Mini golf & jumping pillow",t:"at camp"},
+    // Eats
+    {g:"e",n:"Red Parka Pub 🍔",t:"4 min · Glen"},
+    {g:"e",n:"White Mtn Cider Co. 🍩",t:"3 min · Glen"},
+    {g:"e",n:"Almost There Tavern 🍺",t:"3 min · Glen"},
+    {g:"e",n:"Muddy Moose 🍔",t:"12 min · N. Conway"},
+    {g:"e",n:"Moat Mountain BBQ 🍖",t:"12 min · N. Conway"},
+    {g:"e",n:"May Kelly's Cottage 🍀",t:"13 min · N. Conway"},
+    {g:"e",n:"Delaney's Hole in the Wall 🎿",t:"12 min · N. Conway"},
+    {g:"e",n:"Flatbread Company 🍕",t:"12 min · N. Conway"},
+    {g:"e",n:"Banners breakfast 🥞",t:"15 min · Conway"},
+    {g:"e",n:"Priscilla's breakfast 🥞",t:"12 min · N. Conway"},
+    {g:"e",n:"Peach's 🥞",t:"12 min · N. Conway"},
+    {g:"e",n:"Zeb's General Store 🍬",t:"12 min · N. Conway"},
+    {g:"e",n:"Hart's Turkey Farm 🦃",t:"on the drive home"},
+    {g:"e",n:"Woodstock Inn Brewery 🍺",t:"on the drive home"},
+    {g:"e",n:"Campfire s'mores 🔥",t:"at your site"}
+  ];
+  var DAYS=[
+    {k:"f",name:"Friday",date:"Jul 17",note:"arriving ~3pm"},
+    {k:"s",name:"Saturday",date:"Jul 18",note:""},
+    {k:"u",name:"Sunday",date:"Jul 19",note:"last Santa night"},
+    {k:"m",name:"Monday",date:"Jul 20",note:"check-out · drive home"}
+  ];
+  var SLOTS=["Morning","Midday","Afternoon","Evening"];
+  var TABS=[
+    {k:"f",label:"🏕️ Fri",note:"Jellystone events after your ~3pm Friday arrival."},
+    {k:"s",label:"🏕️ Sat",note:"Saturday at Jellystone — Santa's Summer Vacation."},
+    {k:"u",label:"🏕️ Sun",note:"Sunday at Jellystone — last night of the Santa theme."},
+    {k:"m",label:"🏕️ Mon",note:"Monday morning — Color Splash theme begins."},
+    {k:"a",label:"🎢 Attractions",note:"Parks, falls, trains & trails from the guide below."},
+    {k:"e",label:"🍔 Eats",note:"Restaurant picks from the guide below."}
+  ];
+  var LS_KEY="glenPlanV1";
+
+  function emptyPlan(){var p={};DAYS.forEach(function(d){p[d.k]=[[],[],[],[]];});return p;}
+  var plan=emptyPlan();
+
+  /* --- encode/decode: days joined by ';', slots by '|', entries by ','.
+         number = ITEMS index; '~' prefix = custom text (URI-encoded). --- */
+  function encodePlan(p){
+    return DAYS.map(function(d){
+      return p[d.k].map(function(slot){
+        return slot.map(function(en){
+          return typeof en==="number"?String(en):"~"+encodeURIComponent(en);
+        }).join(",");
+      }).join("|");
+    }).join(";");
+  }
+  function decodePlan(str){
+    var p=emptyPlan();
+    if(!str)return p;
+    var days=str.split(";");
+    DAYS.forEach(function(d,di){
+      if(!days[di])return;
+      days[di].split("|").forEach(function(slot,si){
+        if(si>3||!slot)return;
+        slot.split(",").forEach(function(tok){
+          if(!tok)return;
+          if(tok.charAt(0)==="~"){
+            try{p[d.k][si].push(decodeURIComponent(tok.slice(1)).slice(0,60));}catch(e){}
+          }else{
+            var n=parseInt(tok,10);
+            if(!isNaN(n)&&n>=0&&n<ITEMS.length)p[d.k][si].push(n);
+          }
+        });
+      });
+    });
+    return p;
+  }
+
+  var $=function(id){return document.getElementById(id);};
+  var statusTimer=null;
+  function flash(msg){
+    var el=$("pl-status");el.textContent=msg;
+    clearTimeout(statusTimer);statusTimer=setTimeout(function(){el.textContent="";},2500);
+  }
+  function save(msg){
+    var enc=encodePlan(plan);
+    try{localStorage.setItem(LS_KEY,enc);}catch(e){}
+    try{history.replaceState(null,"",enc.replace(/[;|]/g,"")===""?location.pathname:location.pathname+"?p="+encodeURIComponent(enc));}catch(e){}
+    flash(msg||"Saved ✓");
+  }
+
+  /* --- selection (tap-to-place, used on touch and as a click fallback) --- */
+  var pending=null; // {type:'item',id} | {type:'custom',text}
+  function setPending(p,label){
+    pending=p;
+    var hint=$("pl-hint");
+    if(p){hint.hidden=false;hint.innerHTML="";
+      hint.appendChild(document.createTextNode("Now tap a day slot to place “"+label+"” — or "));
+      var c=document.createElement("button");c.type="button";c.className="pl-btn";c.style.cssText="padding:2px 10px;font-size:12px;";c.textContent="cancel";
+      c.addEventListener("click",function(){setPending(null);renderChips();});
+      hint.appendChild(c);
+    }else{hint.hidden=true;}
+  }
+
+  /* --- palette --- */
+  var activeTab="f";
+  function renderTabs(){
+    var box=$("pl-tabs");box.innerHTML="";
+    TABS.forEach(function(t){
+      var b=document.createElement("button");
+      b.type="button";b.className="pl-tab"+(t.k===activeTab?" on":"");
+      b.textContent=t.label;b.setAttribute("role","tab");
+      b.addEventListener("click",function(){activeTab=t.k;renderTabs();renderChips();});
+      box.appendChild(b);
+    });
+    $("pl-tabnote").textContent=TABS.filter(function(t){return t.k===activeTab;})[0].note;
+  }
+  function renderChips(){
+    var box=$("pl-chips");box.innerHTML="";
+    ITEMS.forEach(function(it,id){
+      if(it.g!==activeTab)return;
+      var b=document.createElement("button");
+      b.type="button";b.className="pl-chip"+(pending&&pending.type==="item"&&pending.id===id?" sel":"");
+      b.draggable=true;
+      var nm=document.createElement("span");nm.className="nm";nm.textContent=it.n;
+      var tm=document.createElement("span");tm.className="tm";
+      if(it.t.indexOf("$")>-1){
+        tm.appendChild(document.createTextNode(it.t.replace(/ ?· ?\$/,"")+" "));
+        var f=document.createElement("span");f.className="fee";f.textContent="$";tm.appendChild(f);
+      }else{tm.textContent=it.t;}
+      b.appendChild(nm);b.appendChild(tm);
+      b.addEventListener("dragstart",function(e){
+        e.dataTransfer.setData("text/plain","n"+id);e.dataTransfer.effectAllowed="copy";
+      });
+      b.addEventListener("click",function(){
+        if(pending&&pending.type==="item"&&pending.id===id){setPending(null);}
+        else{setPending({type:"item",id:id},it.n);}
+        renderChips();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  /* --- days & slots --- */
+  function entryLabel(en){return typeof en==="number"?ITEMS[en].n:en;}
+  function renderDays(){
+    var box=$("pl-days");box.innerHTML="";
+    DAYS.forEach(function(d){
+      var card=document.createElement("div");card.className="pl-day";
+      var h=document.createElement("h3");h.textContent=d.name+" · "+d.date;card.appendChild(h);
+      if(d.note){var dn=document.createElement("p");dn.className="dnote";dn.textContent=d.note;card.appendChild(dn);}
+      SLOTS.forEach(function(sname,si){
+        var lab=document.createElement("div");lab.className="pl-slotname";lab.textContent=sname;card.appendChild(lab);
+        var ul=document.createElement("ul");ul.className="pl-drop";ul.dataset.day=d.k;ul.dataset.slot=si;
+        var entries=plan[d.k][si];
+        if(!entries.length){
+          var eh=document.createElement("li");eh.className="pl-empty-hint";eh.textContent="drop here";ul.appendChild(eh);
+        }
+        entries.forEach(function(en,ei){
+          var li=document.createElement("li");li.className="pl-entry";li.draggable=true;
+          var txt=document.createElement("span");txt.className="en";txt.textContent=entryLabel(en);
+          if(typeof en==="number"){
+            var et=document.createElement("span");et.className="et";et.textContent=ITEMS[en].t;txt.appendChild(et);
+          }
+          var x=document.createElement("button");x.type="button";x.className="pl-x";
+          x.setAttribute("aria-label","Remove "+entryLabel(en));x.textContent="×";
+          x.addEventListener("click",function(){plan[d.k][si].splice(ei,1);save("Removed");renderDays();});
+          li.appendChild(txt);li.appendChild(x);
+          li.addEventListener("dragstart",function(e){
+            e.dataTransfer.setData("text/plain","m"+d.k+si+":"+ei);e.dataTransfer.effectAllowed="move";
+          });
+          ul.appendChild(li);
+        });
+        ul.addEventListener("dragover",function(e){e.preventDefault();ul.classList.add("over");});
+        ul.addEventListener("dragleave",function(){ul.classList.remove("over");});
+        ul.addEventListener("drop",function(e){
+          e.preventDefault();ul.classList.remove("over");
+          handleDrop(e.dataTransfer.getData("text/plain"),d.k,si);
+        });
+        ul.addEventListener("click",function(){
+          if(!pending)return;
+          if(pending.type==="item")plan[d.k][si].push(pending.id);
+          else plan[d.k][si].push(pending.text);
+          setPending(null);save("Added ✓");renderChips();renderDays();
+        });
+        card.appendChild(ul);
+      });
+      box.appendChild(card);
+    });
+  }
+  function handleDrop(data,day,slot){
+    if(!data)return;
+    if(data.charAt(0)==="n"){
+      var id=parseInt(data.slice(1),10);
+      if(!isNaN(id)&&id>=0&&id<ITEMS.length){plan[day][slot].push(id);save("Added ✓");renderDays();}
+    }else if(data.charAt(0)==="m"){
+      var sd=data.charAt(1),ss=parseInt(data.charAt(2),10),ei=parseInt(data.slice(4),10);
+      if(plan[sd]&&plan[sd][ss]&&ei>=0&&ei<plan[sd][ss].length){
+        var en=plan[sd][ss].splice(ei,1)[0];
+        plan[day][slot].push(en);save("Moved ✓");renderDays();
+      }
+    }
+  }
+
+  /* --- toolbar --- */
+  $("pl-share").addEventListener("click",function(){
+    var url=location.origin+location.pathname+"?p="+encodeURIComponent(encodePlan(plan));
+    function done(){flash("Link copied — send it to anyone!");}
+    function fallback(){
+      var ta=document.createElement("textarea");ta.value=url;ta.style.position="fixed";ta.style.opacity="0";
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");done();}catch(e){prompt("Copy this link:",url);}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done,fallback);}
+    else fallback();
+  });
+  $("pl-print").addEventListener("click",function(){
+    document.body.classList.add("print-plan");
+    window.print();
+    setTimeout(function(){document.body.classList.remove("print-plan");},500);
+  });
+  $("pl-clear").addEventListener("click",function(){
+    if(!confirm("Clear your whole plan?"))return;
+    plan=emptyPlan();save("Cleared");renderDays();
+  });
+  $("pl-custom-add").addEventListener("click",addCustom);
+  $("pl-custom-input").addEventListener("keydown",function(e){if(e.key==="Enter")addCustom();});
+  function addCustom(){
+    var inp=$("pl-custom-input");var v=inp.value.trim().slice(0,60);
+    if(!v)return;
+    inp.value="";
+    setPending({type:"custom",text:v},v);
+  }
+
+  /* --- init --- */
+  var fromUrl=new URLSearchParams(location.search).get("p");
+  if(fromUrl){
+    plan=decodePlan(fromUrl);
+    var b=$("pl-banner");b.hidden=false;
+    b.textContent="📬 A shared plan was loaded from this link. Anything you change saves to this device (and updates the link in your address bar).";
+    try{localStorage.setItem(LS_KEY,encodePlan(plan));}catch(e){}
+  }else{
+    try{plan=decodePlan(localStorage.getItem(LS_KEY)||"");}catch(e){}
+  }
+  renderTabs();renderChips();renderDays();
+  })();
+  </script>
+
+
+  <!-- CLOSEST -->
+  <section>
+    <h2><span class="em">⭐</span> Closest to camp (5–15 min)</h2>
+    <p class="sub">You could fill the whole weekend without driving more than 15 minutes.</p>
+    <div class="grid">
+      <div class="card"><div class="tag">Theme park</div><h3><a href="https://www.storylandnh.com/" target="_blank" rel="noopener">Story Land</a></h3><span class="drive">🚗 3 min</span><p>Classic fairy-tale amusement park, best for ages ~2–10. Rides, a splash zone, and character meet-ups. Literally next door to camp.</p></div>
+      <div class="card"><div class="tag rain">Indoor · Rainy-day</div><h3><a href="https://www.livingshores.com/" target="_blank" rel="noopener">Living Shores Aquarium</a></h3><span class="drive">🚗 3 min</span><p>Hands-on interactive aquarium — touch tanks, stingrays, a bird aviary. Perfect hot-afternoon or rain backup, right beside Story Land.</p></div>
+      <div class="card circled"><svg class="scribble" viewBox="0 0 340 200" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M326,92 C324,44 252,16 168,16 C72,16 14,48 15,98 C16,148 80,184 172,183 C262,182 328,152 324,98 C321,72 314,52 292,38"
+              stroke="#e8352b" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M330,100 C326,52 250,22 166,22 C74,22 20,52 21,102 C22,150 82,176 170,176"
+              stroke="#e8352b" stroke-width="2.2" stroke-linecap="round" opacity="0.55"/>
+        <path d="M300,30 C312,22 326,26 322,40" stroke="#e8352b" stroke-width="2.6" stroke-linecap="round"/>
+        <text x="270" y="20" transform="rotate(-11 270 20)" font-family="'Comic Sans MS','Bradley Hand','Chalkboard SE','Marker Felt',cursive" font-size="30" font-weight="bold" fill="#e8352b" stroke="#e8352b" stroke-width="0.4">Fun!</text>
+        <path d="M262,26 C250,34 240,44 236,54" stroke="#e8352b" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M236,54 l-7,-2 m7,2 l1,-7" stroke="#e8352b" stroke-width="2.4" stroke-linecap="round"/>
+      </svg><div class="tag coaster">🎢 Mountain coaster</div><h3><a href="https://cranmore.com/mountain-adventure-park" target="_blank" rel="noopener">Cranmore Mountain Adventure Park</a></h3><span class="drive">🚗 15 min</span><p>North Conway's all-in-one: a <b>mountain coaster</b>, giant swing, soaring eagle zip, tubing, and an aerial adventure course. A top pick for the coaster you asked about.</p></div>
+      <div class="card"><div class="tag wet">💦 Waterfall · Wading</div><h3><a href="https://www.alltrails.com/trail/us/new-hampshire/dianas-baths" target="_blank" rel="noopener">Diana's Baths</a></h3><span class="drive">🚗 15 min</span><p>Short, flat, kid-friendly walk to a run of cascades and shallow pools. A White Mountains family classic.</p></div>
+      <div class="card"><div class="tag">🚂 Scenic train</div><h3><a href="https://www.conwayscenic.com/" target="_blank" rel="noopener">Conway Scenic Railroad</a></h3><span class="drive">🚗 12 min</span><p>Vintage train rides from North Conway. Short Valley trains for little ones; the Mountaineer through Crawford Notch for jaw-dropping scenery.</p></div>
+      <div class="card"><div class="tag wet">💦 Lake · Views</div><h3><a href="https://www.nhstateparks.org/find-parks-trails/echo-lake-state-park" target="_blank" rel="noopener">Echo Lake &amp; Cathedral Ledge</a></h3><span class="drive">🚗 15 min</span><p>Easy swimming beach below the cliffs, plus a short drive to the top of Cathedral Ledge for a huge valley view.</p></div>
+      <div class="card"><div class="tag trail">🥾 Scenic drive</div><h3><a href="https://www.visitwhitemountains.com/things-to-do/scenic-drives/" target="_blank" rel="noopener">Kancamagus Highway swimming</a></h3><span class="drive">🚗 15 min to start</span><p>The famous "Kanc." Roadside stops: Lower Falls (swimming), Rocky Gorge, and the easy Sabbaday Falls walk.</p></div>
+    </div>
+  </section>
+
+  <!-- MT WASHINGTON -->
+  <section>
+    <h2><span class="em">🏔️</span> North of Glen — Jackson, Pinkham Notch &amp; Mt. Washington (12–22 min)</h2>
+    <p class="sub">Head up Route 16 toward the highest peak in the Northeast — with a pretty village and easy waterfalls along the way.</p>
+    <div class="grid">
+      <div class="card"><div class="tag">Summit adventure</div><h3><a href="https://mtwashingtonautoroad.com/" target="_blank" rel="noopener">Mt. Washington Auto Road</a></h3><span class="drive">🚗 20 min</span><p>Drive yourself (or take a guided van tour) to the 6,288-ft summit. Bring a jacket — it's cold and windy up top even in July.</p></div>
+      <div class="card"><div class="tag wet">💦 Waterfall · Village</div><h3><a href="https://www.jacksonnh.com/" target="_blank" rel="noopener">Jackson Falls &amp; Village</a></h3><span class="drive">🚗 12 min</span><p>Roadside cascades and pools right in the postcard village of Jackson — free, easy wading, and a covered-bridge photo op on the way up Route 16.</p></div>
+      <div class="card"><div class="tag trail">🥾 Easy trails · Bikes</div><h3><a href="https://www.greatglentrails.com/" target="_blank" rel="noopener">Great Glen Trails</a></h3><span class="drive">🚗 20 min</span><p>Flat, family walking and biking paths along the river at the base of the Auto Road. Bike and gear rentals on site.</p></div>
+      <div class="card"><div class="tag wet">💦 Waterfall</div><h3><a href="https://www.alltrails.com/trail/us/new-hampshire/glen-ellis-falls" target="_blank" rel="noopener">Glen Ellis Falls</a></h3><span class="drive">🚗 20 min</span><p>Short walk to a dramatic 64-ft waterfall in Pinkham Notch. Quick, scenic, and easy.</p></div>
+    </div>
+  </section>
+
+  <!-- WORTH THE DRIVE -->
+  <section>
+    <h2><span class="em">🚗</span> Worth the drive (40–60 min)</h2>
+    <p class="sub">Still inside your hour — and home to some of the region's best-loved family spots, including Clark's.</p>
+    <div class="grid">
+      <div class="card"><div class="tag">Theme park</div><h3><a href="https://www.santasvillage.com/" target="_blank" rel="noopener">Santa's Village — Jefferson</a></h3><span class="drive far">🚗 ~45 min</span><p>Christmas-themed park with rides and a water-play area. Many families rate it a step above Story Land for a full day out.</p></div>
+      <div class="card"><div class="tag">🚂 Cog Railway</div><h3><a href="https://www.thecog.com/" target="_blank" rel="noopener">Mt. Washington Cog Railway</a></h3><span class="drive far">🚗 ~40 min</span><p>Historic cog train that climbs the west side of Mt. Washington to the summit. A bucket-list ride.</p></div>
+      <div class="card"><div class="tag coaster">Trained bears · Train</div><h3><a href="https://clarksbears.com/" target="_blank" rel="noopener">Clark's Bears — Lincoln</a></h3><span class="drive far">🚗 ~50 min</span><p>The classic you asked for: trained-bear shows, the White Mountain Central Railroad, Segway tours, water blaster boats, and delightfully weird roadside fun.</p></div>
+      <div class="card"><div class="tag wet">💦 Waterpark</div><h3><a href="https://www.whalestalewaterpark.net/" target="_blank" rel="noopener">Whale's Tale Waterpark — Lincoln</a></h3><span class="drive far">🚗 ~50 min</span><p>Slides, a wave pool, and a lazy river. The go-to for a hot day, right near Clark's.</p></div>
+      <div class="card"><div class="tag coaster">🎢 Ziplines · Coaster</div><h3><a href="https://alpinezipline.com/" target="_blank" rel="noopener">Alpine Adventures — Lincoln</a></h3><span class="drive far">🚗 ~50 min</span><p>Big zipline tours plus off-road "Thrillsville" adventures. High-adrenaline option for older kids and adults.</p></div>
+      <div class="card"><div class="tag trail">🥾 Gorge walk</div><h3><a href="https://www.nhstateparks.org/visit/state-parks/flume-gorge" target="_blank" rel="noopener">Flume Gorge — Franconia Notch</a></h3><span class="drive far">🚗 ~55 min</span><p>Spectacular boardwalk through a narrow granite gorge with waterfalls. One of NH's signature natural attractions.</p></div>
+      <div class="card"><div class="tag rain">Caves · Boardwalk</div><h3><a href="https://lostrivergorge.com/" target="_blank" rel="noopener">Lost River Gorge &amp; Boulder Caves</a></h3><span class="drive far">🚗 ~55 min</span><p>Boardwalk trail through a gorge with squeeze-through caves kids adore. North Woodstock, near Lincoln.</p></div>
+    </div>
+  </section>
+
+  <!-- JUST BEYOND -->
+  <section>
+    <h2><span class="em">🎯</span> Just past the hour — but you asked (Funspot &amp; the Lakes)</h2>
+    <p class="sub">These sit around 1 hr 10–20 from Glen. Great as a full-day trip or on your way in/out of the region.</p>
+    <div class="grid">
+      <div class="card"><div class="tag rain">☔ Arcade · Rainy-day king</div><h3><a href="https://www.funspotnh.com/" target="_blank" rel="noopener">Funspot — Weirs Beach / Laconia</a></h3><span class="drive far">🚗 ~1 hr 15</span><p>The world's largest arcade — classic and modern games, mini golf, bowling, indoor golf, and bingo. The ultimate bad-weather day and a blast for all ages.</p></div>
+      <div class="card"><div class="tag coaster">🎢 Coaster · Ziplines</div><h3><a href="https://www.gunstock.com/" target="_blank" rel="noopener">Gunstock Mountain Adventure Park — Gilford</a></h3><span class="drive far">🚗 ~1 hr 15</span><p>A long <b>mountain coaster</b>, a huge zipline tour, aerial treetop course, and scenic chairlift by Lake Winnipesaukee.</p></div>
+      <div class="card"><div class="tag wet">💦 Lake day</div><h3><a href="https://cruisenh.com/" target="_blank" rel="noopener">Weirs Beach &amp; Lake Winnipesaukee</a></h3><span class="drive far">🚗 ~1 hr 15</span><p>Boardwalk, beach, and the M/S Mount Washington scenic cruise. Pairs perfectly with a Funspot day.</p></div>
+    </div>
+  </section>
+
+  <!-- RESTAURANTS -->
+  <section id="eats">
+    <h2><span class="em">🍔</span> Where to eat</h2>
+    <p class="sub">A mix of family-friendly, kid-approved, and worth-the-splurge — closest to camp first.</p>
+
+    <h3 style="margin:8px 0 2px;color:var(--pine);font-size:17px;">Right in Glen / Bartlett (closest)</h3>
+    <div class="grid">
+      <div class="card"><div class="tag eat">🍔 Steaks · Pub · Family</div><h3><a href="https://www.redparkapub.com/" target="_blank" rel="noopener">Red Parka Steakhouse &amp; Pub</a></h3><span class="drive">🚗 4 min · Glen</span><p>A White Mountains institution since the '70s — steaks, ribs, a salad bar in a VW Bug, and a fun, rowdy-in-a-good-way family vibe. Expect a wait on weekends.</p></div>
+      <div class="card"><div class="tag eat">🍩 Donuts · New American</div><h3><a href="https://ciderconh.com/" target="_blank" rel="noopener">White Mountain Cider Co.</a></h3><span class="drive">🚗 3 min · Glen</span><p>Famous fresh cider donuts and a gourmet market by day; an award-winning farm-to-table dinner by night. Grab donuts for the campsite.</p></div>
+      <div class="card"><div class="tag eat">🍺 Casual tavern</div><h3>Almost There Tavern</h3><span class="drive">🚗 3 min · Glen</span><p>Low-key local spot for burgers, wings, and a relaxed dinner close to camp — easy with tired kids after a park day.</p></div>
+    </div>
+
+    <h3 style="margin:20px 0 2px;color:var(--pine);font-size:17px;">North Conway (10–15 min)</h3>
+    <div class="grid">
+      <div class="card"><div class="tag eat">🍔 Rustic American · Family</div><h3><a href="https://muddymoose.com/" target="_blank" rel="noopener">Muddy Moose</a></h3><span class="drive">🚗 12 min</span><p>Log-cabin atmosphere, big portions, a solid kids' menu, and the famous "Mud Pie." A reliable family favorite.</p></div>
+      <div class="card"><div class="tag eat">🍖 BBQ · Brewery</div><h3><a href="https://www.moatmountain.com/" target="_blank" rel="noopener">Moat Mountain Smoke House &amp; Brewing</a></h3><span class="drive">🚗 12 min</span><p>Smoked BBQ and wood-fired pizzas with house-brewed beer. Lively, family-welcome, and consistently one of the valley's best.</p></div>
+      <div class="card"><div class="tag eat">🍀 Irish pub · Views</div><h3><a href="https://www.maykellys.com/" target="_blank" rel="noopener">May Kelly's Cottage</a></h3><span class="drive">🚗 13 min</span><p>Hearty Irish-American plates and one of the best mountain-view patios around, with a big lawn for kids to roam.</p></div>
+      <div class="card"><div class="tag eat">🎿 Casual · Ski-lodge vibe</div><h3><a href="https://www.delaneys.com/" target="_blank" rel="noopener">Delaney's Hole in the Wall</a></h3><span class="drive">🚗 12 min</span><p>Wide-ranging menu (burgers to sushi), fun ski memorabilia everywhere, and a welcoming spot for families.</p></div>
+      <div class="card"><div class="tag eat">🍕 Wood-fired pizza</div><h3><a href="https://www.flatbreadcompany.com/" target="_blank" rel="noopener">Flatbread Company</a></h3><span class="drive">🚗 12 min</span><p>Organic, wood-fired flatbread pizzas — kids can watch the fire oven. Casual and easy.</p></div>
+    </div>
+
+    <h3 style="margin:20px 0 2px;color:var(--pine);font-size:17px;">Breakfast &amp; treats</h3>
+    <div class="grid">
+      <div class="card"><div class="tag eat">🥞 Breakfast · Views</div><h3><a href="https://www.bannersnh.com/" target="_blank" rel="noopener">Banners Restaurant — Conway</a></h3><span class="drive">🚗 15 min</span><p>Big breakfasts with a mountain view to fuel a day of adventuring.</p></div>
+      <div class="card"><div class="tag eat">🥞 Breakfast favorite</div><h3>Priscilla's — North Conway</h3><span class="drive">🚗 12 min</span><p>A beloved local breakfast/lunch spot — go early, it fills up fast on weekends.</p></div>
+      <div class="card"><div class="tag eat">🍨 Breakfast &amp; lunch</div><h3>Peach's — North Conway</h3><span class="drive">🚗 12 min</span><p>Cozy, home-style breakfast and lunch that regulars swear by.</p></div>
+      <div class="card"><div class="tag eat">🍬 Candy · General store</div><h3><a href="https://www.zebs.com/" target="_blank" rel="noopener">Zeb's General Store</a></h3><span class="drive">🚗 12 min</span><p>Old-time candy, fudge, and NH-made treats in the middle of North Conway village — a guaranteed kid hit.</p></div>
+    </div>
+  </section>
+
+  <!-- RAINY DAY -->
+  <section>
+    <h2><span class="em">☔</span> If it rains</h2>
+    <p class="sub">Mountain weather turns fast. Your best indoor bets:</p>
+    <div class="grid">
+      <div class="card"><div class="tag rain">Indoor</div><h3><a href="https://www.livingshores.com/" target="_blank" rel="noopener">Living Shores Aquarium</a></h3><span class="drive">🚗 3 min</span><p>Closest indoor option, right next to camp.</p></div>
+      <div class="card"><div class="tag rain">Indoor</div><h3><a href="https://www.conwayscenic.com/" target="_blank" rel="noopener">Conway Scenic Railroad</a></h3><span class="drive">🚗 12 min</span><p>Covered, comfortable, and scenic regardless of weather.</p></div>
+      <div class="card"><div class="tag rain">Indoor</div><h3><a href="https://www.settlersgreen.com/" target="_blank" rel="noopener">North Conway shopping</a></h3><span class="drive">🚗 12 min</span><p>Tax-free outlets, toy and bookshops, and plenty of cafés to wait out a shower.</p></div>
+      <div class="card"><div class="tag rain">Indoor</div><h3><a href="https://www.funspotnh.com/" target="_blank" rel="noopener">Funspot arcade</a></h3><span class="drive far">🚗 ~1 hr 15</span><p>If the whole day is a washout, this is the trip to make.</p></div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section>
+    <h2><span class="em">✅</span> Quick trip tips</h2>
+    <ul class="tips">
+      <li><b>Don't sleep on the campground.</b> Jellystone has a pool/splash area, mini golf, a jumping pillow, and Yogi character events on summer weekends — an easy low-cost day between outings.</li>
+      <li><b>Buy park tickets online in advance.</b> Story Land and Santa's Village post daily calendars and summer weekend tickets are usually cheaper (and faster to enter) bought ahead.</li>
+      <li><b>Confirm hours before you drive.</b> Attraction and lift hours shift week to week in summer — a 30-second check saves a wasted trip, especially for the 45–60 min spots.</li>
+      <li><b>Pack layers for Mt. Washington.</b> The summit can be 30–40°F colder than the valley with fierce wind, even on a sunny July day.</li>
+      <li><b>Beat the crowds and heat.</b> Arrive at theme parks and Diana's Baths near opening; save pools and indoor spots for the hot mid-afternoon.</li>
+      <li><b>Reserve dinner on weekends.</b> Red Parka, Moat Mountain, and other favorites get slammed — call ahead or expect a wait.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Made for John's Glen, NH family weekend • Drive times are approximate from Jellystone Glen Ellis • Always confirm current hours, prices, and open days with each spot before visiting.
+  </footer>
+
+</div>
+</body>
+</html>
