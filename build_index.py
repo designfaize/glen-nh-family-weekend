@@ -67,13 +67,29 @@ html = html.replace(
     + " Figure about <b>35–40 minutes of total detour time</b> — worth it to visit the biggest arcade on the planet? <b>Yes.</b>",
 )
 
-# 6. Splice in the planner section before the "Closest to camp" section
+# 6. Fast food & quick bites group at the end of the eats section
+FAST_FOOD = """
+    <h3 style="margin:20px 0 2px;color:var(--pine);font-size:17px;">Fast food &amp; quick bites</h3>
+    <div class="grid">
+      <div class="card"><div class="tag eat">🍩 Coffee · Donuts</div><h3><a href="https://locations.dunkindonuts.com/en/nh/glen/850-nh-route-16/354716" target="_blank" rel="noopener">Dunkin' — Glen</a></h3><span class="drive">🚗 3 min · Glen</span><p>Right on Rt 16 in Glen — the morning coffee-and-Munchkins run before the parks (second location a few minutes south in Bartlett).</p></div>
+      <div class="card"><div class="tag eat">🍟 Fast food</div><h3><a href="https://www.mcdonalds.com/us/en-us/location/nh/north-conway/1750-white-mountain-hwy/1952.html" target="_blank" rel="noopener">McDonald's — North Conway</a></h3><span class="drive">🚗 12 min</span><p>1750 White Mountain Hwy, right on the strip. The zero-negotiation option after a long park day.</p></div>
+      <div class="card"><div class="tag eat">🍔 Burgers · Fries</div><h3>Five Guys — North Conway</h3><span class="drive">🚗 12 min</span><p>1623 White Mountain Hwy — a step-up burger and a mountain of fries, same strip.</p></div>
+      <div class="card"><div class="tag eat">🌮 Tacos</div><h3>Taco Bell — North Conway</h3><span class="drive">🚗 12 min</span><p>1672 White Mountain Hwy, next to everything else on the strip.</p></div>
+      <div class="card"><div class="tag eat">🍔 Fast food</div><h3>Burger King — North Conway</h3><span class="drive">🚗 12 min</span><p>1385 White Mountain Hwy, on the way into town from Glen.</p></div>
+      <div class="card"><div class="tag eat">🥪 Subs</div><h3>Subway — North Conway</h3><span class="drive">🚗 12 min</span><p>1500 White Mountain Hwy — grab subs for a Kancamagus or Echo Lake picnic.</p></div>
+    </div>
+"""
+eats_end = "  </section>\n\n  <!-- RAINY DAY -->"
+assert eats_end in html, "eats section end not found"
+html = html.replace(eats_end, FAST_FOOD + eats_end, 1)
+
+# 7. Splice in the planner section before the "Closest to camp" section
 marker = "  <!-- CLOSEST -->"
 assert marker in html, "CLOSEST marker not found"
 snippet = (repo / "planner_snippet.html").read_text(encoding="utf-8")
 html = html.replace(marker, snippet + "\n\n" + marker, 1)
 
-# 7. Emoji favicon
+# 8. Emoji favicon
 assert "</title>" in html
 html = html.replace(
     "</title>",
