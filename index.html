@@ -356,7 +356,10 @@
     .pl-filter.on{background:var(--forest2);border-color:var(--forest2);color:#fff;}
     #dyn-days .rainrow .when{color:var(--sky);}
     .pl-map{width:100%;height:auto;background:#eef6f0;border:1px solid #cfe3d5;border-radius:8px;margin-bottom:2px;display:block;}
-    .pl-map-cap{font-size:10px;color:var(--muted);text-align:center;margin:0 0 8px;}
+    .pl-map-cap{font-size:10px;color:var(--muted);text-align:center;margin:0 0 4px;}
+    .pl-gmap{display:block;text-align:center;font-size:11px;font-weight:700;margin:0 0 10px;color:var(--sky);text-decoration:none;}
+    .pl-gmap:hover{text-decoration:underline;}
+    .pl-daytabs a.pl-gmapbtn{text-decoration:none;background:#e8f1fb;border-color:#bcd6ef;color:#2a5d8a;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -789,6 +792,13 @@
         vb.addEventListener("click",function(){view[d.k]=vm[0];renderDays();});
         tg.appendChild(vb);
       });
+      var gu=gmapsUrl(d.k,G);
+      if(gu){
+        var ga=document.createElement("a");
+        ga.className="pl-daytab pl-gmapbtn";ga.href=gu;ga.target="_blank";ga.rel="noopener";
+        ga.textContent="🗺️ route";
+        tg.appendChild(ga);
+      }
       card.appendChild(tg);
       /* pre-compute travel connectors + on-the-way badges (day starts at camp).
          Badge = detour cost of stop B in A->B->C vs driving A->C direct. */
@@ -950,6 +960,23 @@
     if(it.g==="a")return "<b>"+esc(it.n)+"</b>"+(en===FUNSPOT_ID?"":" ("+esc(it.t)+")");
     return "<b>"+esc(it.n)+"</b> at "+esc(it.t.split("–")[0]);
   }
+  /* real-Google-Maps deep link: day's stops as a driving route from camp */
+  function gmapsUrl(dayK,grid){
+    if(typeof COORDS==="undefined"||!COORDS)return null;
+    var pts=[],last=0;
+    (grid||plan)[dayK].forEach(function(s){s.forEach(function(en){
+      if(isTakeout(en))return;
+      var l=locOf(en);
+      if(l==null||l===last)return;
+      pts.push(l);last=l;
+    });});
+    if(!pts.length)return null;
+    function cs(l){return COORDS[l][0]+","+COORDS[l][1];}
+    var dest=pts[pts.length-1],mids=pts.slice(0,-1).slice(0,9); /* Maps URL API caps waypoints at 9 */
+    var u="https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+cs(0)+"&destination="+cs(dest);
+    if(mids.length)u+="&waypoints="+mids.map(cs).join("%7C");
+    return u;
+  }
   /* mini route-sketch map for a day: main-plan stops in order, camp = ★ */
   function dayMap(dayK){
     if(typeof COORDS==="undefined"||!COORDS)return "";
@@ -1039,7 +1066,10 @@
       }else if(wet){
         rows+='<div class="slot rainrow"><div class="when">☔ Heads-up</div><div class="what">Forecast looks wet — tap <b>☔ rain plan</b> on this day in the <a href="#builder">builder</a> to stage indoor backups (filter the palette with <b>☔ indoor only</b>).</div></div>';
       }
-      var side=dayMap(d.k)+'<div class="day-camp-h">'+cfg.side+'</div><ul>';
+      var gmu=gmapsUrl(d.k,plan);
+      var side=dayMap(d.k)
+        +(gmu?'<a class="pl-gmap" href="'+gmu.replace(/&/g,"&amp;")+'" target="_blank" rel="noopener">🗺️ Open this route in Google Maps ↗</a>':'')
+        +'<div class="day-camp-h">'+cfg.side+'</div><ul>';
       cfg.list.forEach(function(ev){
         var it=ITEMS[ev.id];
         side+='<li><span class="ct">'+ev.t+'</span><span>'

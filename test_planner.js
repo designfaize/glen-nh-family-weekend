@@ -177,7 +177,8 @@ check('dynamic plan title shows forecast chip', ids['dyn-days'].innerHTML.includ
 check('planner exposes refresh hook for weather', typeof global.window.__plRefresh === 'function');
 
 // Rain plans: every day gets ☀️/☔ tabs; Saturday's rain plan holds 2 indoor picks
-check('every day has sun/rain variant tabs', findEls(ids['pl-days'], 'pl-daytab', []).length === 8);
+check('every day has sun/rain variant tabs',
+  findEls(ids['pl-days'], 'pl-daytab', []).filter(t => !classHas(t, 'pl-gmapbtn')).length === 8);
 check('rain tab shows entry count', findEls(ids['pl-days'].children[1], 'pl-daytab', []).some(t => t.textContent.includes('rain plan (2)')));
 findEls(ids['pl-days'].children[1], 'pl-daytab', [])[1].listeners.click[0]();
 const satRain = ids['pl-days'].children[1];
@@ -209,4 +210,17 @@ ids['pl-filters'].children[2].listeners.click[0]();
 const freeNames = findEls(ids['pl-chips'], 'pl-chip', []).map(c => collect(c, 'nm', []).join(''));
 check('free filter hides big-ticket items', !freeNames.some(n => n.includes('Cog Railway')));
 check('free filter keeps free attractions', freeNames.some(n => n.includes('Jackson Falls')));
+
+// Real Google Maps deep links: builder button + day-card sidebar link.
+// Expected buttons: Fri (sun view), Sat (rain view, toggled above), Mon (sun view).
+// Sat's MAIN plan has only a dad-run, Sun is empty — neither earns a sun-view route.
+const gmapBtns = findEls(ids['pl-days'], 'pl-gmapbtn', []);
+check('builder days get Google Maps route button', gmapBtns.length === 3 &&
+  gmapBtns.every(b => b.href.startsWith('https://www.google.com/maps/dir/?api=1') && b.href.includes('origin=44.1,')));
+check('Monday route carries waypoints to home', gmapBtns.some(b => b.href.includes('waypoints=') && b.href.includes('42.594,-71.016')));
+check('day-card sidebar links to Google Maps', dyn3.includes('Open this route in Google Maps'));
+// Dad runs never appear on family route maps: only Fri + Mon have sketches/links
+check('dad runs stay off route maps and links',
+  dyn3.split('Open this route in Google Maps').length - 1 === 2 &&
+  dyn3.split('class="pl-map"').length - 1 === 2);
 process.exit(fail);
