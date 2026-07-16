@@ -61,6 +61,8 @@ LOCS = [
     ("Polar Caves", 43.7570, -71.7290),            # 49
     ("Squam Lakes Science Ctr", 43.7320, -71.5880),# 50
     ("Home — Middleton MA", 42.5940, -71.0160),    # 51
+    ("Saco Valley Sports Ctr", 44.0160, -70.9800), # 52
+    ("Uberblast N Conway", 44.0400, -71.1200),     # 53
 ]
 
 
@@ -109,7 +111,7 @@ CAMP_KNOWN = {
     29: 15, 30: 12, 31: 12, 32: 12, 33: 65, 34: 55,
     35: 3, 36: 12, 37: 13, 38: 12, 39: 11, 40: 12, 41: 80,
     42: 12, 43: 8, 44: 50, 45: 12, 46: 18, 47: 12, 48: 35, 49: 70, 50: 60,
-    51: 145,
+    51: 145, 52: 18, 53: 12,
 }
 ratios = sorted(CAMP_KNOWN[i] / matrix[0][i] for i in CAMP_KNOWN if matrix[0][i])
 scale = ratios[len(ratios) // 2]
@@ -127,7 +129,14 @@ for i in range(n):
             matrix[i][j] = max(1, round(matrix[i][j] * scale))
 
 out = pathlib.Path(__file__).parent / "travel.json"
-out.write_text(json.dumps({"source": source, "matrix": matrix}), encoding="utf-8")
+out.write_text(
+    json.dumps({
+        "source": source,
+        "matrix": matrix,
+        "locs": [[lat, lon] for _, lat, lon in LOCS],
+    }),
+    encoding="utf-8",
+)
 print(f"travel.json written ({source}), {len(LOCS)}x{len(LOCS)}")
 for a, b in [(0, 2), (0, 17), (2, 29), (0, 1), (17, 41)]:
     print(f"  {LOCS[a][0]} -> {LOCS[b][0]}: {matrix[a][b]} min")

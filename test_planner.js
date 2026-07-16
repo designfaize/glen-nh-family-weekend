@@ -12,7 +12,10 @@ function el(tag) {
     classList: { add() {}, remove() {} },
     hidden: false, draggable: false, value: '', _text: '', className: '',
     set textContent(v) { this._text = String(v); this.children = []; },
-    get textContent() { return this._text; },
+    get textContent() {
+      return this._text + this.children
+        .map(c => (c.text !== undefined ? c.text : (c.textContent || ''))).join('');
+    },
     set innerHTML(v) { this._html = String(v); this.children = []; },
     get innerHTML() { return this._html || ''; },
     appendChild(c) { this.children.push(c); return c; },
@@ -54,15 +57,18 @@ global.window = { print() {}, __wx: { '2026-07-18': { hi: 81, lo: 62, kind: 'rai
 // -> Funspot (81) -> Drive home (120). McD out-and-back must read "easy dad run!";
 // Funspot en route home gets the "worth it!" detour callout; placed drive-home
 // replaces the fixed Monday rollout row.
+// Rain block (after '&'): Saturday rain plan = Living Shores (64) + Kahuna Laguna (111).
 store['glenPlanV1'] =
-  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52|81,120,~%';
+  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52|81,120,~%' +
+  '&|||;64,111|||;|||;|||';
 
 eval(m[1]);
 
+function classHas(c, cls) { return (c.className || '').split(/\s+/).indexOf(cls) > -1; }
 function count(node, cls) {
   let n = 0;
   (node.children || []).forEach(c => {
-    if ((c.className || '').includes(cls)) n++;
+    if (classHas(c, cls)) n++;
     n += count(c, cls);
   });
   return n;
@@ -96,7 +102,7 @@ check('custom entry is HTML-escaped in plan', !dyn.includes('<script') && dyn.in
 // Travel connectors: Fri has camp event (0) -> Story Land (63) -> ... -> Laser Tag (9, camp)
 function collect(node, cls, out) {
   (node.children || []).forEach(c => {
-    if ((c.className || '').includes(cls)) out.push(c.textContent);
+    if (classHas(c, cls)) out.push(c.textContent);
     collect(c, cls, out);
   });
   return out;
@@ -110,7 +116,7 @@ check('narrative includes hop times', dyn.includes('🚗 ~'));
 // On-the-way badges: Fri seq camp -> Story Land -> back to camp gives a detour verdict
 function findEls(node, cls, out) {
   (node.children || []).forEach(c => {
-    if ((c.className || '').includes(cls)) out.push(c);
+    if (classHas(c, cls)) out.push(c);
     findEls(c, cls, out);
   });
   return out;
@@ -169,4 +175,27 @@ check('share URL preserves takeout flag', new URL(global.__copied).searchParams.
 check('builder day header shows forecast chip', collect(satCard, 'pl-wx', []).some(t => t.includes('81°/62°')));
 check('dynamic plan title shows forecast chip', ids['dyn-days'].innerHTML.includes('🌧️ 81°/62°'));
 check('planner exposes refresh hook for weather', typeof global.window.__plRefresh === 'function');
+
+// Rain plans: every day gets ☀️/☔ tabs; Saturday's rain plan holds 2 indoor picks
+check('every day has sun/rain variant tabs', findEls(ids['pl-days'], 'pl-daytab', []).length === 8);
+check('rain tab shows entry count', findEls(ids['pl-days'].children[1], 'pl-daytab', []).some(t => t.textContent.includes('rain plan (2)')));
+findEls(ids['pl-days'].children[1], 'pl-daytab', [])[1].listeners.click[0]();
+const satRain = ids['pl-days'].children[1];
+check('toggling shows the rain variant', satRain.className.includes('rain') && count(satRain, 'pl-entry') === 2);
+check('rain entries include the indoor picks', collect(satRain, 'en', []).join(' ').includes('Kahuna'));
+const dyn3 = ids['dyn-days'].innerHTML;
+check('wet forecast promotes Plan B in narrative', dyn3.includes('this might be the real plan') && dyn3.includes('Living Shores'));
+check('share URL carries the rain block', new URL(global.__copied).searchParams.get('p') !== null &&
+  (ids['pl-share'].listeners.click[0](), new URL(global.__copied).searchParams.get('p').includes('&') &&
+   new URL(global.__copied).searchParams.get('p').includes('64,111')));
+
+// Indoor filter + badges (Attractions tab is active from the focus test)
+ids['pl-filters'].children[0].listeners.click[0]();
+const filteredNames = findEls(ids['pl-chips'], 'pl-chip', []).map(c => collect(c, 'nm', []).join(''));
+check('indoor filter keeps indoor attractions', filteredNames.some(n => n.includes('Kahuna')));
+check('indoor filter hides outdoor attractions', !filteredNames.some(n => n.includes("Diana's Baths")));
+check('chips carry indoor badge', collect(ids['pl-chips'], 'tm', []).some(t => t.includes('☔')));
+
+// Route sketch map in the day-by-day plan
+check('day cards include a route mini-map', dyn3.includes('class="pl-map"') && dyn3.includes('★ = camp'));
 process.exit(fail);

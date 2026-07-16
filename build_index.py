@@ -112,6 +112,18 @@ import json
 
 travel = json.loads((repo / "travel.json").read_text(encoding="utf-8"))
 
+# 6b2. Extra indoor cards in the "If it rains" section
+rainy_anchor = '<div class="card"><div class="tag rain">Indoor</div><h3><a href="https://www.funspotnh.com/" target="_blank" rel="noopener">Funspot arcade</a></h3>'
+assert rainy_anchor in html, "rainy Funspot card not found"
+html = html.replace(
+    rainy_anchor,
+    '<div class="card"><div class="tag rain">Indoor · Waterpark</div><h3><a href="https://www.kahunalaguna.com/" target="_blank" rel="noopener">Kahuna Laguna</a></h3><span class="drive">🚗 12 min</span><p>The 40,000 sq ft indoor waterpark — call ahead for non-guest day passes.</p></div>\n'
+    '      <div class="card"><div class="tag rain">Indoor · Laser tag</div><h3>Uberblast — North Conway</h3><span class="drive">🚗 12 min</span><p>Indoor laser tag, arcade, and gaming near Settlers Green — the kid-approved rain fix.</p></div>\n'
+    '      <div class="card"><div class="tag rain">Indoor · Bowling</div><h3>Saco Valley Sports Center</h3><span class="drive">🚗 ~18 min · Fryeburg</span><p>Candlepin bowling with bumpers, golf simulators, air hockey, and pool tables just over the Maine line.</p></div>\n'
+    "      " + rainy_anchor,
+    1,
+)
+
 # 6c. Trip weather section (animated forecast cards) before the itinerary
 wx_marker = "  <!-- ITINERARY -->"
 assert wx_marker in html, "itinerary marker not found"
@@ -126,7 +138,8 @@ travel_marker = "var TRAVEL=null;/*__TRAVEL__*/"
 assert travel_marker in snippet, "TRAVEL marker not found in snippet"
 snippet = snippet.replace(
     travel_marker,
-    "var TRAVEL=" + json.dumps(travel["matrix"], separators=(",", ":")) + ";",
+    "var TRAVEL=" + json.dumps(travel["matrix"], separators=(",", ":"))
+    + ";var COORDS=" + json.dumps(travel["locs"], separators=(",", ":")) + ";",
 )
 html = html.replace(marker, snippet + "\n\n" + marker, 1)
 
