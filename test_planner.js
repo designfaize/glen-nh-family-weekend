@@ -198,4 +198,15 @@ check('chips carry indoor badge', collect(ids['pl-chips'], 'tm', []).some(t => t
 
 // Route sketch map in the day-by-day plan
 check('day cards include a route mini-map', dyn3.includes('class="pl-map"') && dyn3.includes('★ = camp'));
+
+// Price tiers: Kahuna chip shows $$$ (indoor filter still on, Attractions tab active)
+check('chips show price tiers', findEls(ids['pl-chips'], 'fee', []).some(f => f.textContent.trim() === '$$$'));
+check('placed entries show price tier', collect(ids['pl-days'].children[0], 'et', []).some(t => t.includes('· $')));
+check('sidebar events show price tier', dyn3.includes('<span class="fee">$</span>'));
+// Free filter hides priced items (turn indoor off, free on)
+ids['pl-filters'].children[0].listeners.click[0]();
+ids['pl-filters'].children[2].listeners.click[0]();
+const freeNames = findEls(ids['pl-chips'], 'pl-chip', []).map(c => collect(c, 'nm', []).join(''));
+check('free filter hides big-ticket items', !freeNames.some(n => n.includes('Cog Railway')));
+check('free filter keeps free attractions', freeNames.some(n => n.includes('Jackson Falls')));
 process.exit(fail);

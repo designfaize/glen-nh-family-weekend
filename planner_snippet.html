@@ -90,7 +90,7 @@
 
   <section id="builder">
     <h2><span class="em">🧩</span> Build your own itinerary</h2>
-    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above.</p>
+    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above. Cost tags are rough, per person: <span style="color:#c0562b;font-weight:700;">$</span> pocket change → <span style="color:#c0562b;font-weight:700;">$$$$$</span> big-ticket; no tag = free.</p>
 
     <div class="pl-toolbar">
       <button type="button" id="pl-share" class="pl-btn pl-btn-primary">🔗 Copy share link</button>
@@ -261,6 +261,15 @@
    64,67,81,84,111,113,116,121,122,
    87,88,89,90,91,92,93,94,95,96,97,98,99,100,102,104,105,106,107,108,109,110
   ].forEach(function(i){INDOOR[i]=1;});
+  /* rough per-person cost tiers: 1=$ pocket change ... 5=$$$$$ big-ticket. Unlisted = free. */
+  var PRICE={};
+  [[1,[2,4,9,13,18,21,22,24,29,35,40,42,44,53,54,55,66,68,69,113,95,96,97,98,104,105,107,108,109,110]],
+   [2,[14,33,36,56,72,79,80,81,114,116,118,121,122,87,89,90,91,92,93,94,99,100,102,103,106]],
+   [3,[64,67,70,82,111,115,117,119,88]],
+   [4,[63,65,74,76,77,83,112]],
+   [5,[75,78]]
+  ].forEach(function(t){t[1].forEach(function(i){PRICE[i]=t[0];});});
+  function priceTag(id){return PRICE[id]?"$$$$$".slice(0,PRICE[id]):"";}
   var FUNSPOT_ID=81;
   /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
      All camp events are location 0 (Jellystone). Append in lockstep with ITEMS. */
@@ -420,7 +429,7 @@
 
   /* --- palette --- */
   var activeTab="f";
-  var filters={indoor:false,near:false};
+  var filters={indoor:false,near:false,free:false};
   function nearCamp(id){
     var l=LOC[id];
     if(l===0)return true;
@@ -445,6 +454,7 @@
       if(it.g!==activeTab)return;
       if(filters.indoor&&!INDOOR[id])return;
       if(filters.near&&!nearCamp(id))return;
+      if(filters.free&&PRICE[id])return;
       var b=document.createElement("button");
       b.type="button";b.className="pl-chip"+(pending&&pending.type==="item"&&pending.id===id?" sel":"");
       b.draggable=true;
@@ -457,10 +467,11 @@
       }
       var nm=document.createElement("span");nm.className="nm";nm.textContent=it.n;
       var tm=document.createElement("span");tm.className="tm";
-      if(it.t.indexOf("$")>-1){
-        tm.appendChild(document.createTextNode(it.t.replace(/ ?· ?\$/,"")+" "));
-        var f=document.createElement("span");f.className="fee";f.textContent="$";tm.appendChild(f);
-      }else{tm.textContent=it.t;}
+      tm.textContent=it.t.replace(/ ?· ?\$/,"");
+      if(PRICE[id]){
+        var f=document.createElement("span");f.className="fee";f.textContent=" "+priceTag(id);
+        tm.appendChild(f);
+      }
       if(INDOOR[id])tm.appendChild(document.createTextNode(" ☔"));
       b.appendChild(nm);b.appendChild(tm);
       if(anc&&(it.g==="a"||it.g==="e")){
@@ -560,8 +571,11 @@
           var li=document.createElement("li");li.className="pl-entry"+(isTakeout(en)?" togo":"");li.draggable=true;
           var txt=document.createElement("span");txt.className="en";txt.textContent=entryLabel(en);
           if(typeof en==="number"){
+            var bid=baseId(en);
             var et=document.createElement("span");et.className="et";
-            et.textContent=ITEMS[baseId(en)].t+(INDOOR[baseId(en)]?" · ☔ indoor":"");
+            et.textContent=ITEMS[bid].t.replace(/ ?· ?\$/,"")
+              +(PRICE[bid]?" · "+priceTag(bid):"")
+              +(INDOOR[bid]?" · ☔ indoor":"");
             txt.appendChild(et);
           }
           var x=document.createElement("button");x.type="button";x.className="pl-x";
@@ -752,7 +766,7 @@
         var it=ITEMS[ev.id];
         side+='<li><span class="ct">'+ev.t+'</span><span>'
           +(picked[ev.id]?'<span class="star">★</span> ':'')+esc(it.n)
-          +(it.t.indexOf("$")>-1?' <span class="fee">$</span>':'')+'</span></li>';
+          +(PRICE[ev.id]?' <span class="fee">'+priceTag(ev.id)+'</span>':'')+'</span></li>';
       });
       side+='</ul>';
       if(cfg.note)side+='<div class="note-line">'+cfg.note+'</div>';
@@ -789,7 +803,7 @@
   });
   (function(){
     var fr=$("pl-filters");
-    [["indoor","☔ indoor only"],["near","🚗 ≤15 min"]].forEach(function(f){
+    [["indoor","☔ indoor only"],["near","🚗 ≤15 min"],["free","🆓 free stuff"]].forEach(function(f){
       var b=document.createElement("button");b.type="button";b.className="pl-filter";
       b.textContent=f[1];
       b.addEventListener("click",function(){
