@@ -112,6 +112,12 @@ import json
 
 travel = json.loads((repo / "travel.json").read_text(encoding="utf-8"))
 
+# 6c. Trip weather section (animated forecast cards) before the itinerary
+wx_marker = "  <!-- ITINERARY -->"
+assert wx_marker in html, "itinerary marker not found"
+wx = (repo / "weather_snippet.html").read_text(encoding="utf-8")
+html = html.replace(wx_marker, wx + "\n\n" + wx_marker, 1)
+
 # 7. Splice in the planner section before the "Closest to camp" section
 marker = "  <!-- CLOSEST -->"
 assert marker in html, "CLOSEST marker not found"

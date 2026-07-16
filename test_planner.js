@@ -2,8 +2,9 @@
 // travel matrix injected) against a stub DOM. Run build_index.py first.
 const fs = require('fs');
 const src = fs.readFileSync(__dirname + '/index.html', 'utf8');
-const m = src.match(/<script>([\s\S]*?)<\/script>/);
-if (!m) { console.error('FAIL: no script block'); process.exit(1); }
+const blocks = [...src.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]);
+const m = [null, blocks.find(s => s.includes('glenPlanV1'))];
+if (!m[1]) { console.error('FAIL: no planner script block'); process.exit(1); }
 
 function el(tag) {
   return {
@@ -42,7 +43,8 @@ Object.defineProperty(globalThis, 'navigator', {
 global.document.execCommand = () => { global.__copied = global.document.body.children.at(-1).value; return true; };
 global.prompt = () => {};
 global.confirm = () => true;
-global.window = { print() {} };
+// Pretend the weather script already loaded a forecast for Saturday
+global.window = { print() {}, __wx: { '2026-07-18': { hi: 81, lo: 62, kind: 'rain', e: '🌧️' } } };
 
 // Seed: items 0 & 63 in Fri/Morning + Laser Tag (9) in Fri/Evening; custom text plus
 // takeout McDonald's (105+1000) in Sat/Evening; Monday gets Funspot (81) in Midday plus
@@ -131,4 +133,9 @@ check('regular food entries also get the checkbox', findEls(ids['pl-days'], 'pl-
 const dyn2 = ids['dyn-days'].innerHTML;
 check('narrative sends dad for takeout', dyn2.includes('while <b>Dad</b> grabs <b>McDonald') && dyn2.includes('each way'));
 check('share URL preserves takeout flag', new URL(global.__copied).searchParams.get('p').includes('1105'));
+
+// Weather weaving: Saturday header + narrative pick up the stubbed forecast
+check('builder day header shows forecast chip', collect(satCard, 'pl-wx', []).some(t => t.includes('81°/62°')));
+check('dynamic plan title shows forecast chip', ids['dyn-days'].innerHTML.includes('🌧️ 81°/62°'));
+check('planner exposes refresh hook for weather', typeof global.window.__plRefresh === 'function');
 process.exit(fail);

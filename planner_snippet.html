@@ -65,6 +65,7 @@
     .pl-togo{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#7a5cc0;flex-shrink:0;cursor:pointer;white-space:nowrap;}
     .pl-togo input{accent-color:#7a5cc0;margin:0;}
     .pl-entry.togo{border-left-color:#7a5cc0;}
+    .pl-wx{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -257,11 +258,12 @@
     return TRAVEL[a][b]||0;
   }
   var DAYS=[
-    {k:"f",name:"Friday",date:"Jul 17",note:"arriving ~3pm"},
-    {k:"s",name:"Saturday",date:"Jul 18",note:""},
-    {k:"u",name:"Sunday",date:"Jul 19",note:"last Santa night"},
-    {k:"m",name:"Monday",date:"Jul 20",note:"check-out · drive home"}
+    {k:"f",name:"Friday",date:"Jul 17",iso:"2026-07-17",note:"arriving ~3pm"},
+    {k:"s",name:"Saturday",date:"Jul 18",iso:"2026-07-18",note:""},
+    {k:"u",name:"Sunday",date:"Jul 19",iso:"2026-07-19",note:"last Santa night"},
+    {k:"m",name:"Monday",date:"Jul 20",iso:"2026-07-20",note:"check-out · drive home"}
   ];
+  function wxFor(iso){return (typeof window!=="undefined"&&window.__wx)?window.__wx[iso]:null;}
   var SLOTS=["Morning","Midday","Afternoon","Evening"];
   var TABS=[
     {k:"f",label:"🏕️ Fri",note:"Jellystone events after your ~3pm Friday arrival."},
@@ -429,7 +431,10 @@
     var box=$("pl-days");box.innerHTML="";
     DAYS.forEach(function(d){
       var card=document.createElement("div");card.className="pl-day";
-      var h=document.createElement("h3");h.textContent=d.name+" · "+d.date;card.appendChild(h);
+      var h=document.createElement("h3");h.textContent=d.name+" · "+d.date;
+      var wxd=wxFor(d.iso);
+      if(wxd){var ws=document.createElement("span");ws.className="pl-wx";ws.textContent=" "+wxd.e+" "+wxd.hi+"°/"+wxd.lo+"°";h.appendChild(ws);}
+      card.appendChild(h);
       if(d.note){var dn=document.createElement("p");dn.className="dnote";dn.textContent=d.note;card.appendChild(dn);}
       /* pre-compute travel connectors + on-the-way badges (day starts at camp).
          Badge = detour cost of stop B in A->B->C vs driving A->C direct. */
@@ -623,7 +628,10 @@
       side+='</ul>';
       if(cfg.note)side+='<div class="note-line">'+cfg.note+'</div>';
       side+='<div class="note-line">★ = picked in your builder</div>';
-      out+='<div class="day"><h3>'+esc(cfg.title)+'</h3><div class="day-cols"><div class="day-main">'+rows
+      var wxn=wxFor(d.iso);
+      out+='<div class="day"><h3>'+esc(cfg.title)
+        +(wxn?' <span class="pl-wx">'+wxn.e+" "+wxn.hi+"°/"+wxn.lo+"°</span>":"")
+        +'</h3><div class="day-cols"><div class="day-main">'+rows
         +'</div><aside class="day-camp">'+side+'</aside></div></div>';
     });
     box.innerHTML=out;
@@ -671,5 +679,6 @@
     try{plan=decodePlan(localStorage.getItem(LS_KEY)||"");}catch(e){}
   }
   renderTabs();renderChips();renderDays();
+  if(typeof window!=="undefined")window.__plRefresh=function(){renderDays();};
   })();
   </script>

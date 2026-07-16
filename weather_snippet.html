@@ -1,0 +1,109 @@
+  <!-- TRIP WEATHER -->
+  <style>
+    .wx-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-top:14px;}
+    .wx-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 8px 9px;text-align:center;position:relative;}
+    .wx-card.sun{background:#fffdf4;} .wx-card.partly{background:#fefcf6;}
+    .wx-card.rain{background:#f4f9fd;} .wx-card.storm{background:#f7f4fd;}
+    .wx-card.trip{border-color:var(--sun);box-shadow:0 0 0 2px var(--sun-soft);}
+    .wx-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--sun);
+      color:#3a2a08;font-size:10px;font-weight:800;padding:1px 8px;border-radius:999px;letter-spacing:.03em;white-space:nowrap;}
+    .wx-day{font-weight:800;font-size:12.5px;color:var(--pine);}
+    .wx-i{width:58px;height:58px;margin:2px auto;display:block;overflow:visible;}
+    .wx-temp{font-size:13.5px;color:var(--muted);} .wx-temp b{font-size:16px;color:var(--ink);}
+    .wx-pp{font-size:11.5px;color:var(--sky);font-weight:700;}
+    .wx-cap{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.25;}
+    .wx-fail{font-size:13px;color:var(--muted);font-style:italic;}
+    .wx-i .rays{transform-origin:32px 32px;animation:wxspin 14s linear infinite;}
+    .wx-i .minirays{transform-origin:22px 22px;animation:wxspin 14s linear infinite;}
+    .wx-i .cloud{animation:wxdrift 5s ease-in-out infinite alternate;}
+    .wx-i .drops line{animation:wxdrop 1.1s linear infinite;}
+    .wx-i .drops .d2{animation-delay:.35s;} .wx-i .drops .d3{animation-delay:.7s;}
+    .wx-i .bolt{animation:wxflash 2.4s ease-in-out infinite;}
+    @keyframes wxspin{to{transform:rotate(360deg);}}
+    @keyframes wxdrift{from{transform:translateX(-3px);}to{transform:translateX(3px);}}
+    @keyframes wxdrop{0%{transform:translateY(-4px);opacity:0;}30%{opacity:1;}100%{transform:translateY(7px);opacity:0;}}
+    @keyframes wxflash{0%,60%,100%{opacity:0;}65%,90%{opacity:1;}}
+    @media (prefers-reduced-motion:reduce){#trip-weather svg *{animation:none !important;}}
+  </style>
+
+  <section id="trip-weather">
+    <h2><span class="em">🌤️</span> Trip weather</h2>
+    <p class="sub">Live forecast for Glen, NH — your trip days are highlighted, and each planner day up here and below picks up its forecast automatically.</p>
+    <div class="wx-cards" id="wx-cards" hidden></div>
+    <p class="wx-fail" id="wx-fail" hidden>Couldn't load the forecast right now — check any weather app for Glen, NH 03838 before you pack.</p>
+  </section>
+
+  <script>
+  (function(){
+  "use strict";
+  var TRIP={"2026-07-17":1,"2026-07-18":1,"2026-07-19":1,"2026-07-20":1};
+  var EMOJI={sun:"☀️",partly:"⛅",cloud:"☁️",rain:"🌧️",storm:"⛈️"};
+  var CAPTION={sun:"Coaster weather!",partly:"Perfect park day",cloud:"Trails & trains day",
+    rain:"Kahuna / aquarium day ☔",storm:"Arcade weather 🕹️"};
+  function kindOf(code){
+    if(code===0)return "sun";
+    if(code<=2)return "partly";
+    if(code===3||code===45||code===48)return "cloud";
+    if(code>=95)return "storm";
+    return "rain";
+  }
+  var SUN='<g class="rays" stroke="#e8a838" stroke-width="3.5" stroke-linecap="round">'
+    +'<line x1="32" y1="5" x2="32" y2="13"/><line x1="32" y1="5" x2="32" y2="13" transform="rotate(45 32 32)"/>'
+    +'<line x1="32" y1="5" x2="32" y2="13" transform="rotate(90 32 32)"/><line x1="32" y1="5" x2="32" y2="13" transform="rotate(135 32 32)"/>'
+    +'<line x1="32" y1="5" x2="32" y2="13" transform="rotate(180 32 32)"/><line x1="32" y1="5" x2="32" y2="13" transform="rotate(225 32 32)"/>'
+    +'<line x1="32" y1="5" x2="32" y2="13" transform="rotate(270 32 32)"/><line x1="32" y1="5" x2="32" y2="13" transform="rotate(315 32 32)"/>'
+    +'</g><circle cx="32" cy="32" r="11" fill="#f7c948"/>';
+  var MINISUN='<g class="minirays" stroke="#e8a838" stroke-width="2.5" stroke-linecap="round">'
+    +'<line x1="22" y1="6" x2="22" y2="11"/><line x1="22" y1="6" x2="22" y2="11" transform="rotate(60 22 22)"/>'
+    +'<line x1="22" y1="6" x2="22" y2="11" transform="rotate(120 22 22)"/><line x1="22" y1="6" x2="22" y2="11" transform="rotate(180 22 22)"/>'
+    +'<line x1="22" y1="6" x2="22" y2="11" transform="rotate(240 22 22)"/><line x1="22" y1="6" x2="22" y2="11" transform="rotate(300 22 22)"/>'
+    +'</g><circle cx="22" cy="22" r="8" fill="#f7c948"/>';
+  var CLOUD='<g class="cloud" fill="#eceff1" stroke="#c9cdc9" stroke-width="1.5">'
+    +'<circle cx="25" cy="40" r="9"/><circle cx="36" cy="35" r="11"/><circle cx="46" cy="40" r="8"/>'
+    +'<rect x="19" y="40" width="34" height="9" rx="4.5"/></g>';
+  var DROPS='<g class="drops" stroke="#3a7ca5" stroke-width="2.5" stroke-linecap="round">'
+    +'<line class="d1" x1="27" y1="52" x2="25" y2="58"/><line class="d2" x1="35" y1="52" x2="33" y2="58"/>'
+    +'<line class="d3" x1="43" y1="52" x2="41" y2="58"/></g>';
+  var BOLT='<polygon class="bolt" points="35,45 28,56 33,56 30,64 41,51 35,51 39,45" fill="#f7c948"/>';
+  function icon(kind){
+    var inner=kind==="sun"?SUN
+      :kind==="partly"?MINISUN+CLOUD
+      :kind==="cloud"?CLOUD
+      :kind==="rain"?CLOUD+DROPS
+      :CLOUD+BOLT;
+    return '<svg class="wx-i" viewBox="0 0 64 64" aria-hidden="true">'+inner+'</svg>';
+  }
+  function render(data){
+    var d=data.daily,box=document.getElementById("wx-cards"),html="";
+    window.__wx={};
+    for(var i=0;i<d.time.length;i++){
+      var iso=d.time[i],kind=kindOf(d.weather_code[i]);
+      var hi=Math.round(d.temperature_2m_max[i]),lo=Math.round(d.temperature_2m_min[i]);
+      var pp=d.precipitation_probability_max[i];
+      var dt=new Date(iso+"T12:00:00");
+      var dn=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dt.getDay()];
+      window.__wx[iso]={hi:hi,lo:lo,kind:kind,e:EMOJI[kind]};
+      html+='<div class="wx-card '+kind+(TRIP[iso]?' trip':'')+'">'
+        +(TRIP[iso]?'<span class="wx-badge">🏕️ trip</span>':'')
+        +'<div class="wx-day">'+dn+' '+(dt.getMonth()+1)+'/'+dt.getDate()+'</div>'
+        +icon(kind)
+        +'<div class="wx-temp"><b>'+hi+'°</b> / '+lo+'°</div>'
+        +'<div class="wx-pp">💧 '+(pp==null?"–":pp+"%")+'</div>'
+        +'<div class="wx-cap">'+CAPTION[kind]+'</div></div>';
+    }
+    box.innerHTML=html;box.hidden=false;
+    if(window.__plRefresh)window.__plRefresh();
+  }
+  function fail(){document.getElementById("wx-fail").hidden=false;}
+  var cached=null;
+  try{cached=JSON.parse(sessionStorage.getItem("wxCache")||"null");}catch(e){}
+  if(cached&&cached.t&&Date.now()-cached.t<1800000){render(cached.data);return;}
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=44.10&longitude=-71.19&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=7")
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(data){
+      try{sessionStorage.setItem("wxCache",JSON.stringify({t:Date.now(),data:data}));}catch(e){}
+      render(data);
+    })
+    .catch(fail);
+  })();
+  </script>
