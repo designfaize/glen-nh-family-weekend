@@ -84,10 +84,21 @@ eats_end = "  </section>\n\n  <!-- RAINY DAY -->"
 assert eats_end in html, "eats section end not found"
 html = html.replace(eats_end, FAST_FOOD + eats_end, 1)
 
+# 6b. Inject the place-to-place drive-time matrix (regenerate with gen_travel.py)
+import json
+
+travel = json.loads((repo / "travel.json").read_text(encoding="utf-8"))
+
 # 7. Splice in the planner section before the "Closest to camp" section
 marker = "  <!-- CLOSEST -->"
 assert marker in html, "CLOSEST marker not found"
 snippet = (repo / "planner_snippet.html").read_text(encoding="utf-8")
+travel_marker = "var TRAVEL=null;/*__TRAVEL__*/"
+assert travel_marker in snippet, "TRAVEL marker not found in snippet"
+snippet = snippet.replace(
+    travel_marker,
+    "var TRAVEL=" + json.dumps(travel["matrix"], separators=(",", ":")) + ";",
+)
 html = html.replace(marker, snippet + "\n\n" + marker, 1)
 
 # 8. Emoji favicon

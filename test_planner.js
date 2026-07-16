@@ -1,6 +1,7 @@
-// Smoke test: runs the planner <script> from planner_snippet.html against a stub DOM.
+// Smoke test: runs the planner <script> from the BUILT index.html (which has the
+// travel matrix injected) against a stub DOM. Run build_index.py first.
 const fs = require('fs');
-const src = fs.readFileSync(__dirname + '/planner_snippet.html', 'utf8');
+const src = fs.readFileSync(__dirname + '/index.html', 'utf8');
 const m = src.match(/<script>([\s\S]*?)<\/script>/);
 if (!m) { console.error('FAIL: no script block'); process.exit(1); }
 
@@ -84,4 +85,17 @@ check('Funspot detour callout renders', dyn.includes('35–40 minutes of total d
 check('selected sidebar event gets a star', dyn.includes('<span class="star">★</span> Laser Tag'));
 check('empty Sunday shows builder hint', dyn.includes('drag activities into Sunday below'));
 check('custom entry is HTML-escaped in plan', !dyn.includes('<script') && dyn.includes('Pool, time; fun|x'));
+
+// Travel connectors: Fri has camp event (0) -> Story Land (63) -> ... -> Laser Tag (9, camp)
+function collect(node, cls, out) {
+  (node.children || []).forEach(c => {
+    if ((c.className || '').includes(cls)) out.push(c.textContent);
+    collect(c, cls, out);
+  });
+  return out;
+}
+const friTravel = collect(days[0], 'pl-travel', []);
+check('Friday shows camp -> Story Land leg', friTravel.some(t => /~\d+ min from camp/.test(t)));
+check('Friday shows back-to-camp leg', friTravel.some(t => /~\d+ min back to camp/.test(t)));
+check('narrative includes hop times', dyn.includes('🚗 ~'));
 process.exit(fail);

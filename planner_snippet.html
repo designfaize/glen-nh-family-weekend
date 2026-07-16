@@ -54,6 +54,7 @@
     .pl-entry .pl-x:hover{background:#fbe4e0;}
     .pl-empty-hint{font-size:11px;color:#b9b2a4;text-align:center;margin:auto 0;}
     .day-camp .star{color:var(--sun);font-size:13px;}
+    .pl-travel{list-style:none;font-size:11px;font-weight:700;color:#8a948c;text-align:center;padding:0;line-height:1.3;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -214,6 +215,21 @@
     {g:"e",n:"Wendy's 🥤",t:"Gilford · 10 min past Funspot"}
   ];
   var FUNSPOT_ID=81;
+  /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
+     All camp events are location 0 (Jellystone). Append in lockstep with ITEMS. */
+  var LOC=[
+    0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+    0,0,0,
+    1,1,2,3,4,5,6,7,8,7,9,10,11,12,13,14,15,16,17,18,19,20,0,0,
+    21,22,23,24,25,26,27,28,29,30,31,32,33,34,0,2,2,35,36,37,38,39,40,41
+  ];
+  var TRAVEL=null;/*__TRAVEL__*/
+  function locOf(en){return typeof en==="number"?LOC[en]:null;}
+  function hopMin(a,b){
+    if(a==null||b==null||a===b||!TRAVEL||!TRAVEL[a])return 0;
+    return TRAVEL[a][b]||0;
+  }
   var DAYS=[
     {k:"f",name:"Friday",date:"Jul 17",note:"arriving ~3pm"},
     {k:"s",name:"Saturday",date:"Jul 18",note:""},
@@ -340,6 +356,7 @@
       var card=document.createElement("div");card.className="pl-day";
       var h=document.createElement("h3");h.textContent=d.name+" · "+d.date;card.appendChild(h);
       if(d.note){var dn=document.createElement("p");dn.className="dnote";dn.textContent=d.note;card.appendChild(dn);}
+      var prevLoc=0; /* each day starts at camp */
       SLOTS.forEach(function(sname,si){
         var lab=document.createElement("div");lab.className="pl-slotname";lab.textContent=sname;card.appendChild(lab);
         var ul=document.createElement("ul");ul.className="pl-drop";ul.dataset.day=d.k;ul.dataset.slot=si;
@@ -348,6 +365,16 @@
           var eh=document.createElement("li");eh.className="pl-empty-hint";eh.textContent="drop here";ul.appendChild(eh);
         }
         entries.forEach(function(en,ei){
+          var l=locOf(en);
+          if(l!=null){
+            var t=hopMin(prevLoc,l);
+            if(t>0){
+              var tr=document.createElement("li");tr.className="pl-travel";
+              tr.textContent="🚗 ~"+t+" min"+(prevLoc===0?" from camp":(l===0?" back to camp":" drive"));
+              ul.appendChild(tr);
+            }
+            prevLoc=l;
+          }
           var li=document.createElement("li");li.className="pl-entry";li.draggable=true;
           var txt=document.createElement("span");txt.className="en";txt.textContent=entryLabel(en);
           if(typeof en==="number"){
@@ -430,7 +457,7 @@
     DAYS.forEach(function(d){
       var cfg=PLAN_DAYS[d.k],slots=plan[d.k];
       var picked={};slots.forEach(function(s){s.forEach(function(en){if(typeof en==="number")picked[en]=1;});});
-      var rows="",any=false,hasFunspot=false;
+      var rows="",any=false,hasFunspot=false,prevLocN=0;
       for(var si=0;si<4;si++){
         if(cfg.fixedBefore===si)rows+='<div class="slot"><div class="when">'+cfg.fixedWhen+'</div><div class="what">'+cfg.fixedWhat+'</div></div>';
         var entries=slots[si];
@@ -439,7 +466,14 @@
         var onDrive=cfg.drive&&cfg.drive.indexOf(si)>-1;
         var parts=entries.map(function(en){
           if(en===FUNSPOT_ID)hasFunspot=true;
-          return phrase(en,si);
+          var p=phrase(en,si);
+          var l=locOf(en);
+          if(l!=null){
+            var t=hopMin(prevLocN,l);
+            if(t>0)p="(🚗 ~"+t+" min) "+p;
+            prevLocN=l;
+          }
+          return p;
         });
         rows+='<div class="slot"><div class="when">'+SLOTS[si]+'</div><div class="what">'
           +(onDrive?cfg.driveLabel+": ":OPENERS[si]+" ")+parts.join(", then ")+'.</div></div>';
