@@ -51,10 +51,11 @@ global.window = { print() {}, __wx: { '2026-07-18': { hi: 81, lo: 62, kind: 'rai
 // garbage tokens (out-of-range id, NaN, takeout-flagged non-food 1063, broken URI) that
 // must be dropped silently. Sunday stays empty.
 // Monday seq: Bear Mail (51, camp) -> McDonald's (105, not takeout) -> Wake Up (52, camp)
-// -> Funspot (81) -> Diana's (66). McD out-and-back must read "easy dad run!"; the
-// camp->Funspot leg is a huge detour vs Diana's but departs camp, so no verdict allowed.
+// -> Funspot (81) -> Drive home (120). McD out-and-back must read "easy dad run!";
+// Funspot en route home gets the "worth it!" detour callout; placed drive-home
+// replaces the fixed Monday rollout row.
 store['glenPlanV1'] =
-  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52,81,~%|66';
+  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52|81,120,~%';
 
 eval(m[1]);
 
@@ -86,7 +87,7 @@ check('share URL keeps numeric ids', typeof p === 'string' && p.indexOf('0,63') 
 
 const dyn = ids['dyn-days'].innerHTML;
 check('dynamic plan keeps Friday check-in', dyn.includes('Check in at <b>Jellystone</b>'));
-check('dynamic plan keeps Monday rollout', dyn.includes('Roll out south'));
+check('placed drive-home replaces Monday rollout row', !dyn.includes('Roll out south') && dyn.includes('the drive home to Middleton'));
 check('Funspot detour callout renders', dyn.includes('35–40 minutes of total detour time'));
 check('selected sidebar event gets a star', dyn.includes('<span class="star">★</span> Laser Tag'));
 check('empty Sunday shows builder hint', dyn.includes('drag activities into Sunday below'));
@@ -116,7 +117,8 @@ function findEls(node, cls, out) {
 }
 const badges = findEls(ids['pl-days'], 'pl-otw', []);
 check('detour badges render', badges.length > 0 &&
-  badges.every(b => / (on the way!|slight detour|out of the way!|easy dad run! 🥡)$/.test(b.textContent)));
+  badges.every(b => / (on the way!|slight detour|out of the way!|easy dad run! 🥡|adds ~\d+ min total — worth it! 🕹️)$/.test(b.textContent)));
+check('Funspot en route home gets worth-it detour callout', badges.some(b => b.textContent.includes('worth it! 🕹️')));
 check('food out-and-back reads easy dad run', badges.some(b => b.textContent.includes('easy dad run!')));
 check('out-and-back never says out of the way', (() => {
   const monBadges = findEls(ids['pl-days'].children[3], 'pl-otw', []);
@@ -134,6 +136,14 @@ check('mid-route detours still get called out', (() => {
   // McD -> back to camp -> Funspot: the return-to-camp leg is a genuine mid-route detour
   const monBadges = findEls(ids['pl-days'].children[3], 'pl-otw', []);
   return monBadges.some(b => b.textContent.includes('out of the way'));
+})());
+check('long legs format as hours', (() => {
+  const monTravel = findEls(ids['pl-days'].children[3], 'pl-travel', []);
+  return monTravel.some(t => t.textContent.includes('~1 hr 15 from camp'));
+})());
+check('drive-home leg labeled as such', (() => {
+  const monTravel = findEls(ids['pl-days'].children[3], 'pl-travel', []);
+  return monTravel.some(t => t.textContent.includes('the drive home 🏠'));
 })());
 
 // Focus mode: switch to Attractions tab, click Friday Morning slot (anchor = Story Land)

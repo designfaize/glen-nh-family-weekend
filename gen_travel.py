@@ -60,6 +60,7 @@ LOCS = [
     ("Gorham moose tour", 44.3879, -71.1730),      # 48
     ("Polar Caves", 43.7570, -71.7290),            # 49
     ("Squam Lakes Science Ctr", 43.7320, -71.5880),# 50
+    ("Home — Middleton MA", 42.5940, -71.0160),    # 51
 ]
 
 
@@ -108,6 +109,7 @@ CAMP_KNOWN = {
     29: 15, 30: 12, 31: 12, 32: 12, 33: 65, 34: 55,
     35: 3, 36: 12, 37: 13, 38: 12, 39: 11, 40: 12, 41: 80,
     42: 12, 43: 8, 44: 50, 45: 12, 46: 18, 47: 12, 48: 35, 49: 70, 50: 60,
+    51: 145,
 }
 ratios = sorted(CAMP_KNOWN[i] / matrix[0][i] for i in CAMP_KNOWN if matrix[0][i])
 scale = ratios[len(ratios) // 2]

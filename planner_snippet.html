@@ -234,8 +234,10 @@
     {g:"a",n:"MWV Children's Museum ☔",t:"12 min · N. Conway"},
     {g:"a",n:"Gorham moose tour 🌲",t:"~35 min · evenings"},
     {g:"a",n:"Polar Caves Park 🦇",t:"~1 hr 10 · Rumney"},
-    {g:"a",n:"Squam Lakes Science Ctr 🦉",t:"~1 hr · Holderness"}
+    {g:"a",n:"Squam Lakes Science Ctr 🦉",t:"~1 hr · Holderness"},
+    {g:"a",n:"🏠 Drive home — Middleton, MA",t:"~2 hr 25 from camp"}
   ];
+  var HOME_ID=120;
   var FUNSPOT_ID=81;
   /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
      All camp events are location 0 (Jellystone). Append in lockstep with ITEMS. */
@@ -245,7 +247,7 @@
     0,0,0,
     1,1,2,3,4,5,6,7,8,7,9,10,11,12,13,14,15,16,17,18,19,20,0,0,
     21,22,23,24,25,26,27,28,29,30,31,32,33,34,0,2,2,35,36,37,38,39,40,41,
-    42,43,44,45,46,47,48,49,50
+    42,43,44,45,46,47,48,49,50,51
   ];
   var TRAVEL=null;/*__TRAVEL__*/
   /* Takeout ("send dad") entries are stored as itemId+1000 — same number slot in
@@ -256,6 +258,11 @@
   function hopMin(a,b){
     if(a==null||b==null||a===b||!TRAVEL||!TRAVEL[a])return 0;
     return TRAVEL[a][b]||0;
+  }
+  function fmtMin(t){
+    if(t<60)return t+" min";
+    var h=Math.floor(t/60),m=t%60;
+    return h+" hr"+(m?" "+m:"");
   }
   var DAYS=[
     {k:"f",name:"Friday",date:"Jul 17",iso:"2026-07-17",note:"arriving ~3pm"},
@@ -411,7 +418,7 @@
       b.appendChild(nm);b.appendChild(tm);
       if(anc&&(it.g==="a"||it.g==="e")){
         var ft2=anc.loc===LOC[id]?0:hopMin(anc.loc,LOC[id]);
-        tm.appendChild(document.createTextNode(" · ~"+ft2+"m away"));
+        tm.appendChild(document.createTextNode(" · ~"+fmtMin(ft2)+" away"));
       }
       b.addEventListener("dragstart",function(e){
         e.dataTransfer.setData("text/plain","n"+id);e.dataTransfer.effectAllowed="copy";
@@ -447,12 +454,13 @@
       seq.forEach(function(cur,k){
         if(cur.to){ /* dad's run: out-and-back, family stays put */
           var tt=hopMin(pl,cur.l);
-          if(tt>0)conn[cur.si+"_"+cur.ei]={label:"🥡 Dad's run: ~"+tt+" min each way",badge:"",cls:""};
+          if(tt>0)conn[cur.si+"_"+cur.ei]={label:"🥡 Dad's run: ~"+fmtMin(tt)+" each way",badge:"",cls:""};
           return;
         }
         var t=hopMin(pl,cur.l);
         if(t>0){
-          var c={label:"🚗 ~"+t+" min"+(pl===0?" from camp":(cur.l===0?" back to camp":" drive")),badge:"",cls:""};
+          var suffix=pl===0?" from camp":(cur.l===0?" back to camp":(cur.l===LOC[HOME_ID]?" — the drive home 🏠":" drive"));
+          var c={label:"🚗 ~"+fmtMin(t)+suffix,badge:"",cls:""};
           var nx=null;
           for(var k2=k+1;k2<seq.length;k2++){if(!seq[k2].to){nx=seq[k2];break;}}
           if(nx&&nx.l!==cur.l){
@@ -462,7 +470,8 @@
               if(cur.g==="e"){c.badge="easy dad run! 🥡";c.cls="g";}
             }else{
               var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
-              if(detour<=5){c.badge="on the way!";c.cls="g";}
+              if(cur.l===LOC[FUNSPOT_ID]&&detour>5){c.badge="adds ~"+detour+" min total — worth it! 🕹️";c.cls="g";}
+              else if(detour<=5){c.badge="on the way!";c.cls="g";}
               else if(detour<=15){c.badge="slight detour";c.cls="y";}
               /* departing camp is a fresh choice, never "out of the way" */
               else if(pl!==0){c.badge="out of the way!";c.cls="r";}
@@ -579,6 +588,7 @@
   function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function phrase(en,si){
     if(typeof en==="string")return "<b>"+esc(en)+"</b>";
+    if(en===HOME_ID)return "<b>the drive home to Middleton</b> 🏠";
     var it=ITEMS[en];
     if(it.g==="e"){
       if(LOC[en]===0)return "<b>"+esc(it.n)+"</b> ("+esc(it.t)+")";
@@ -595,8 +605,10 @@
       var cfg=PLAN_DAYS[d.k],slots=plan[d.k];
       var picked={};slots.forEach(function(s){s.forEach(function(en){if(typeof en==="number")picked[baseId(en)]=1;});});
       var rows="",any=false,hasFunspot=false,prevLocN=0;
+      /* a hand-placed "drive home" outranks the default Monday rollout row */
+      var hasHome=slots.some(function(s){return s.indexOf(HOME_ID)>-1;});
       for(var si=0;si<4;si++){
-        if(cfg.fixedBefore===si)rows+='<div class="slot"><div class="when">'+cfg.fixedWhen+'</div><div class="what">'+cfg.fixedWhat+'</div></div>';
+        if(cfg.fixedBefore===si&&!(d.k==="m"&&hasHome))rows+='<div class="slot"><div class="when">'+cfg.fixedWhen+'</div><div class="what">'+cfg.fixedWhat+'</div></div>';
         var entries=slots[si];
         if(!entries.length)continue;
         any=true;
@@ -609,7 +621,7 @@
           var l=locOf(en);
           if(l!=null){
             var t=hopMin(prevLocN,l);
-            if(t>0)p="(🚗 ~"+t+" min) "+p;
+            if(t>0)p="(🚗 ~"+fmtMin(t)+") "+p;
             prevLocN=l;
           }
           return p;
@@ -620,7 +632,7 @@
           sentence+=(sentence?" ":"")
             +(prevLocN===0?"Everyone chills at camp":"Everyone hangs tight")
             +" while <b>Dad</b> grabs <b>"+esc(ITEMS[id].n)+"</b> takeout 🥡"
-            +(t>0?" (~"+t+" min each way)":"")+" 😄.";
+            +(t>0?" (~"+fmtMin(t)+" each way)":"")+" 😄.";
         });
         rows+='<div class="slot"><div class="when">'+SLOTS[si]+'</div><div class="what">'+sentence+'</div></div>';
       }
