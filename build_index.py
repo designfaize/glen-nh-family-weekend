@@ -84,6 +84,29 @@ eats_end = "  </section>\n\n  <!-- RAINY DAY -->"
 assert eats_end in html, "eats section end not found"
 html = html.replace(eats_end, FAST_FOOD + eats_end, 1)
 
+# 6a. Pamphlet-rack classics section before the restaurants
+CLASSICS = """  <!-- PAMPHLET CLASSICS -->
+  <section>
+    <h2><span class="em">🎪</span> The pamphlet-rack classics</h2>
+    <p class="sub">Every lobby up here has a wall of brochures — these are the ones worth grabbing: indoor water, candy by the foot, tube floats, caves, and moose.</p>
+    <div class="grid">
+      <div class="card"><div class="tag coaster">🎢 Alpine slide · Coaster</div><h3><a href="https://www.attitash.com/" target="_blank" rel="noopener">Attitash Mountain Resort</a></h3><span class="drive">🚗 8 min · Bartlett</span><p>North America's <b>longest alpine slide</b> plus the Nor'easter mountain coaster, waterslides, airbag jump, and a scenic chairlift — the closest big adventure park to camp.</p></div>
+      <div class="card"><div class="tag rain">💦 Indoor waterpark</div><h3><a href="https://www.kahunalaguna.com/" target="_blank" rel="noopener">Kahuna Laguna</a></h3><span class="drive">🚗 12 min</span><p>40,000 sq ft of indoor slides, wave pool, and a giant tipping bucket at the Red Jacket resort. Day passes for non-guests <b>when space allows — call ahead</b>. The ultimate rainy-day splash.</p></div>
+      <div class="card"><div class="tag eat">🍭 Candy · Road trip</div><h3><a href="https://www.chutters.com/" target="_blank" rel="noopener">Chutters — Littleton</a></h3><span class="drive far">🚗 ~50 min</span><p>Home of the <b>world's longest candy counter</b> — 112 feet of jars. Pairs perfectly with a Santa's Village day (Littleton is ~20 min past Jefferson).</p></div>
+      <div class="card"><div class="tag">⛳ Mini golf</div><h3>Pirate's Cove — North Conway</h3><span class="drive">🚗 12 min</span><p>The classic pirate-ship mini golf on the strip — caves, waterfalls, and 18 holes of family rivalry.</p></div>
+      <div class="card"><div class="tag wet">🛶 River float</div><h3><a href="https://www.sacobound.com/" target="_blank" rel="noopener">Saco River tubing — Saco Bound</a></h3><span class="drive">🚗 18 min</span><p>Lazy tube floats and canoe trips on the warm, sandy-bottomed Saco out of Center Conway, shuttle included.</p></div>
+      <div class="card"><div class="tag rain">☔ Little kids</div><h3><a href="https://www.mwvchildrensmuseum.org/" target="_blank" rel="noopener">MWV Children's Museum</a></h3><span class="drive">🚗 12 min</span><p>Hands-on play museum in North Conway village — a great under-8 rainy morning.</p></div>
+      <div class="card"><div class="tag trail">🌲 Moose safari</div><h3>Gorham moose tours</h3><span class="drive far">🚗 ~35 min · evenings</span><p>Evening van tours up in the North Country with famously high moose-spotting rates. Book ahead — kids never forget their first moose.</p></div>
+      <div class="card"><div class="tag rain">🦇 Caves</div><h3><a href="https://polarcaves.com/" target="_blank" rel="noopener">Polar Caves Park — Rumney</a></h3><span class="drive far">🚗 ~1 hr 10</span><p>Boardwalk trails through nine glacial caves you squeeze and duck through — right off I‑93 on the drive home.</p></div>
+      <div class="card"><div class="tag trail">🦉 Wildlife</div><h3><a href="https://nhnature.org/" target="_blank" rel="noopener">Squam Lakes Science Center</a></h3><span class="drive far">🚗 ~1 hr</span><p>Live black bears, bobcats, and otters along a woodland trail, plus lake cruises — "On Golden Pond" territory, near the drive home.</p></div>
+    </div>
+  </section>
+
+"""
+rest_marker = "  <!-- RESTAURANTS -->"
+assert rest_marker in html, "restaurants marker not found"
+html = html.replace(rest_marker, CLASSICS + rest_marker, 1)
+
 # 6b. Inject the place-to-place drive-time matrix (regenerate with gen_travel.py)
 import json
 

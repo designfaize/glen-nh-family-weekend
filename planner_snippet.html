@@ -55,6 +55,13 @@
     .pl-empty-hint{font-size:11px;color:#b9b2a4;text-align:center;margin:auto 0;}
     .day-camp .star{color:var(--sun);font-size:13px;}
     .pl-travel{list-style:none;font-size:11px;font-weight:700;color:#8a948c;text-align:center;padding:0;line-height:1.3;}
+    .pl-otw{font-weight:700;} .pl-otw.g{color:#2e9e44;} .pl-otw.y{color:#b07a10;} .pl-otw.r{color:#d64533;}
+    .pl-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0;align-self:center;}
+    .pl-dot.g{background:#2e9e44;} .pl-dot.y{background:#e8a838;} .pl-dot.r{background:#d64533;}
+    .pl-chip .pl-dot{margin-right:2px;}
+    .pl-focus{margin:0 0 8px;font-size:12px;color:var(--muted);background:var(--stone);
+      border:1px solid var(--line);border-radius:9px;padding:6px 9px;line-height:1.6;}
+    .pl-drop.focus{outline:2px solid var(--sun);outline-offset:1px;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -66,7 +73,7 @@
 
   <section id="builder">
     <h2><span class="em">🧩</span> Build your own itinerary</h2>
-    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device.</p>
+    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop.</p>
 
     <div class="pl-toolbar">
       <button type="button" id="pl-share" class="pl-btn pl-btn-primary">🔗 Copy share link</button>
@@ -80,6 +87,7 @@
       <div class="pl-palette">
         <div class="pl-tabs" id="pl-tabs" role="tablist"></div>
         <p class="pl-tabnote" id="pl-tabnote"></p>
+        <div class="pl-focus" id="pl-focus" hidden></div>
         <div class="pl-chips" id="pl-chips"></div>
         <div class="pl-custom">
           <input id="pl-custom-input" type="text" maxlength="60" placeholder="Add your own… e.g. Nap time" aria-label="Add a custom activity">
@@ -212,7 +220,17 @@
     {g:"e",n:"Taco Bell 🌮",t:"12 min · N. Conway"},
     {g:"e",n:"Burger King 🍔",t:"12 min · N. Conway"},
     {g:"e",n:"Subway 🥪",t:"12 min · N. Conway"},
-    {g:"e",n:"Wendy's 🥤",t:"Gilford · 10 min past Funspot"}
+    {g:"e",n:"Wendy's 🥤",t:"Gilford · 10 min past Funspot"},
+    // Pamphlet-rack classics
+    {g:"a",n:"Kahuna Laguna indoor waterpark 💦",t:"12 min · N. Conway"},
+    {g:"a",n:"Attitash Alpine Slide & Coaster 🎢",t:"8 min · Bartlett"},
+    {g:"a",n:"Chutters candy counter 🍭",t:"~50 min · Littleton"},
+    {g:"a",n:"Pirate's Cove mini golf ⛳",t:"12 min · N. Conway"},
+    {g:"a",n:"Saco River tubing 🛶",t:"18 min · Center Conway"},
+    {g:"a",n:"MWV Children's Museum ☔",t:"12 min · N. Conway"},
+    {g:"a",n:"Gorham moose tour 🌲",t:"~35 min · evenings"},
+    {g:"a",n:"Polar Caves Park 🦇",t:"~1 hr 10 · Rumney"},
+    {g:"a",n:"Squam Lakes Science Ctr 🦉",t:"~1 hr · Holderness"}
   ];
   var FUNSPOT_ID=81;
   /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
@@ -222,7 +240,8 @@
     0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
     0,0,0,
     1,1,2,3,4,5,6,7,8,7,9,10,11,12,13,14,15,16,17,18,19,20,0,0,
-    21,22,23,24,25,26,27,28,29,30,31,32,33,34,0,2,2,35,36,37,38,39,40,41
+    21,22,23,24,25,26,27,28,29,30,31,32,33,34,0,2,2,35,36,37,38,39,40,41,
+    42,43,44,45,46,47,48,49,50
   ];
   var TRAVEL=null;/*__TRAVEL__*/
   function locOf(en){return typeof en==="number"?LOC[en]:null;}
@@ -293,7 +312,38 @@
     var enc=encodePlan(plan);
     try{localStorage.setItem(LS_KEY,enc);}catch(e){}
     try{history.replaceState(null,"",enc.replace(/[;|]/g,"")===""?location.pathname:location.pathname+"?p="+encodeURIComponent(enc));}catch(e){}
+    if(focusSel){renderChips();updateFocusNote();}
     flash(msg||"Saved ✓");
+  }
+
+  /* --- slot focus: color the palette by drive time from a slot's last stop --- */
+  var focusSel=null; // {day,slot}
+  function focusAnchor(){
+    if(!focusSel)return null;
+    var slots=plan[focusSel.day];
+    function lastLoc(list){
+      for(var i=list.length-1;i>=0;i--){var l=locOf(list[i]);if(l!=null)return {loc:l,en:list[i]};}
+      return null;
+    }
+    var a=lastLoc(slots[focusSel.slot]);
+    for(var s=focusSel.slot-1;!a&&s>=0;s--)a=lastLoc(slots[s]);
+    if(!a)return {loc:0,name:"camp"};
+    return {loc:a.loc,name:a.loc===0?"camp":ITEMS[a.en].n};
+  }
+  function updateFocusNote(){
+    var el=$("pl-focus");
+    if(!focusSel){el.hidden=true;return;}
+    var anc=focusAnchor();
+    var d=DAYS.filter(function(x){return x.k===focusSel.day;})[0];
+    el.hidden=false;el.innerHTML="";
+    el.appendChild(document.createTextNode("🎯 Coloring Attractions & Eats by drive from "+anc.name+" ("+d.name+" "+SLOTS[focusSel.slot]+"):"));
+    var lg=document.createElement("span");
+    lg.innerHTML=' <span class="pl-dot g"></span>≤10 min <span class="pl-dot y"></span>≤25 min <span class="pl-dot r"></span>longer &nbsp;';
+    el.appendChild(lg);
+    var c=document.createElement("button");c.type="button";c.className="pl-btn";
+    c.style.cssText="padding:1px 9px;font-size:11.5px;";c.textContent="clear";
+    c.addEventListener("click",function(){focusSel=null;renderDays();renderChips();updateFocusNote();});
+    el.appendChild(c);
   }
 
   /* --- selection (tap-to-place, used on touch and as a click fallback) --- */
@@ -324,11 +374,19 @@
   }
   function renderChips(){
     var box=$("pl-chips");box.innerHTML="";
+    var anc=focusSel?focusAnchor():null;
     ITEMS.forEach(function(it,id){
       if(it.g!==activeTab)return;
       var b=document.createElement("button");
       b.type="button";b.className="pl-chip"+(pending&&pending.type==="item"&&pending.id===id?" sel":"");
       b.draggable=true;
+      if(anc&&(it.g==="a"||it.g==="e")){
+        var ft=anc.loc===LOC[id]?0:hopMin(anc.loc,LOC[id]);
+        var dot=document.createElement("span");
+        dot.className="pl-dot "+(ft<=10?"g":(ft<=25?"y":"r"));
+        dot.title="~"+ft+" min from "+anc.name;
+        b.appendChild(dot);
+      }
       var nm=document.createElement("span");nm.className="nm";nm.textContent=it.n;
       var tm=document.createElement("span");tm.className="tm";
       if(it.t.indexOf("$")>-1){
@@ -336,6 +394,10 @@
         var f=document.createElement("span");f.className="fee";f.textContent="$";tm.appendChild(f);
       }else{tm.textContent=it.t;}
       b.appendChild(nm);b.appendChild(tm);
+      if(anc&&(it.g==="a"||it.g==="e")){
+        var ft2=anc.loc===LOC[id]?0:hopMin(anc.loc,LOC[id]);
+        tm.appendChild(document.createTextNode(" · ~"+ft2+"m away"));
+      }
       b.addEventListener("dragstart",function(e){
         e.dataTransfer.setData("text/plain","n"+id);e.dataTransfer.effectAllowed="copy";
       });
@@ -356,7 +418,28 @@
       var card=document.createElement("div");card.className="pl-day";
       var h=document.createElement("h3");h.textContent=d.name+" · "+d.date;card.appendChild(h);
       if(d.note){var dn=document.createElement("p");dn.className="dnote";dn.textContent=d.note;card.appendChild(dn);}
-      var prevLoc=0; /* each day starts at camp */
+      /* pre-compute travel connectors + on-the-way badges (day starts at camp).
+         Badge = detour cost of stop B in A->B->C vs driving A->C direct. */
+      var seq=[];
+      plan[d.k].forEach(function(s,si2){s.forEach(function(en,ei2){
+        var l2=locOf(en);if(l2!=null)seq.push({si:si2,ei:ei2,l:l2});
+      });});
+      var conn={},pl=0;
+      seq.forEach(function(cur,k){
+        var t=hopMin(pl,cur.l);
+        if(t>0){
+          var c={label:"🚗 ~"+t+" min"+(pl===0?" from camp":(cur.l===0?" back to camp":" drive")),badge:"",cls:""};
+          var nx=seq[k+1];
+          if(nx&&nx.l!==cur.l){
+            var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
+            if(detour<=5){c.badge="on the way!";c.cls="g";}
+            else if(detour<=15){c.badge="slight detour";c.cls="y";}
+            else{c.badge="out of the way!";c.cls="r";}
+          }
+          conn[cur.si+"_"+cur.ei]=c;
+        }
+        pl=cur.l;
+      });
       SLOTS.forEach(function(sname,si){
         var lab=document.createElement("div");lab.className="pl-slotname";lab.textContent=sname;card.appendChild(lab);
         var ul=document.createElement("ul");ul.className="pl-drop";ul.dataset.day=d.k;ul.dataset.slot=si;
@@ -365,15 +448,15 @@
           var eh=document.createElement("li");eh.className="pl-empty-hint";eh.textContent="drop here";ul.appendChild(eh);
         }
         entries.forEach(function(en,ei){
-          var l=locOf(en);
-          if(l!=null){
-            var t=hopMin(prevLoc,l);
-            if(t>0){
-              var tr=document.createElement("li");tr.className="pl-travel";
-              tr.textContent="🚗 ~"+t+" min"+(prevLoc===0?" from camp":(l===0?" back to camp":" drive"));
-              ul.appendChild(tr);
+          var c=conn[si+"_"+ei];
+          if(c){
+            var tr=document.createElement("li");tr.className="pl-travel";
+            tr.textContent=c.label;
+            if(c.badge){
+              var bs=document.createElement("span");bs.className="pl-otw "+c.cls;bs.textContent=" · "+c.badge;
+              tr.appendChild(bs);
             }
-            prevLoc=l;
+            ul.appendChild(tr);
           }
           var li=document.createElement("li");li.className="pl-entry";li.draggable=true;
           var txt=document.createElement("span");txt.className="en";txt.textContent=entryLabel(en);
@@ -382,7 +465,10 @@
           }
           var x=document.createElement("button");x.type="button";x.className="pl-x";
           x.setAttribute("aria-label","Remove "+entryLabel(en));x.textContent="×";
-          x.addEventListener("click",function(){plan[d.k][si].splice(ei,1);save("Removed");renderDays();});
+          x.addEventListener("click",function(e){
+            if(e&&e.stopPropagation)e.stopPropagation();
+            plan[d.k][si].splice(ei,1);save("Removed");renderDays();
+          });
           li.appendChild(txt);li.appendChild(x);
           li.addEventListener("dragstart",function(e){
             e.dataTransfer.setData("text/plain","m"+d.k+si+":"+ei);e.dataTransfer.effectAllowed="move";
@@ -396,11 +482,17 @@
           handleDrop(e.dataTransfer.getData("text/plain"),d.k,si);
         });
         ul.addEventListener("click",function(){
-          if(!pending)return;
-          if(pending.type==="item")plan[d.k][si].push(pending.id);
-          else plan[d.k][si].push(pending.text);
-          setPending(null);save("Added ✓");renderChips();renderDays();
+          if(pending){
+            if(pending.type==="item")plan[d.k][si].push(pending.id);
+            else plan[d.k][si].push(pending.text);
+            setPending(null);save("Added ✓");renderChips();renderDays();
+            return;
+          }
+          if(focusSel&&focusSel.day===d.k&&focusSel.slot===si)focusSel=null;
+          else focusSel={day:d.k,slot:si};
+          renderDays();renderChips();updateFocusNote();
         });
+        if(focusSel&&focusSel.day===d.k&&focusSel.slot===si)ul.classList.add("focus");
         card.appendChild(ul);
       });
       box.appendChild(card);

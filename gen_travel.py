@@ -51,6 +51,15 @@ LOCS = [
     ("Burger King", 44.0250, -71.1150),            # 39
     ("Subway", 44.0280, -71.1160),                 # 40
     ("Wendy's Gilford", 43.5867, -71.4256),        # 41
+    ("Kahuna Laguna", 44.0430, -71.1250),          # 42
+    ("Attitash", 44.0827, -71.2290),               # 43
+    ("Chutters Littleton", 44.3061, -71.7701),     # 44
+    ("Pirate's Cove N Conway", 44.0400, -71.1200), # 45
+    ("Saco Bound tubing", 43.9905, -71.0570),      # 46
+    ("MWV Children's Museum", 44.0560, -71.1288),  # 47
+    ("Gorham moose tour", 44.3879, -71.1730),      # 48
+    ("Polar Caves", 43.7570, -71.7290),            # 49
+    ("Squam Lakes Science Ctr", 43.7320, -71.5880),# 50
 ]
 
 
@@ -87,6 +96,33 @@ except Exception as e:
         for i, a in enumerate(LOCS)
     ]
     source = "haversine"
+
+# Calibrate: OSRM's demo profile runs slow on rural NH roads. Pin every camp leg
+# to the guide's published drive times, and scale all other pairs by the median
+# guide/OSRM ratio so hop times feel consistent with the chips.
+CAMP_KNOWN = {
+    1: 3, 2: 15, 3: 15, 4: 12, 5: 15, 6: 15, 7: 20, 8: 12, 9: 20,
+    10: 45, 11: 40, 12: 50, 13: 50, 14: 50, 15: 55, 16: 55,
+    17: 75, 18: 75, 19: 75, 20: 12,
+    21: 4, 22: 3, 23: 3, 24: 12, 25: 12, 26: 13, 27: 12, 28: 12,
+    29: 15, 30: 12, 31: 12, 32: 12, 33: 65, 34: 55,
+    35: 3, 36: 12, 37: 13, 38: 12, 39: 11, 40: 12, 41: 80,
+    42: 12, 43: 8, 44: 50, 45: 12, 46: 18, 47: 12, 48: 35, 49: 70, 50: 60,
+}
+ratios = sorted(CAMP_KNOWN[i] / matrix[0][i] for i in CAMP_KNOWN if matrix[0][i])
+scale = ratios[len(ratios) // 2]
+print(f"calibration scale (median guide/OSRM): {scale:.2f}")
+n = len(LOCS)
+for i in range(n):
+    for j in range(n):
+        if i == j:
+            continue
+        if i == 0:
+            matrix[i][j] = CAMP_KNOWN.get(j, matrix[i][j])
+        elif j == 0:
+            matrix[i][j] = CAMP_KNOWN.get(i, matrix[i][j])
+        else:
+            matrix[i][j] = max(1, round(matrix[i][j] * scale))
 
 out = pathlib.Path(__file__).parent / "travel.json"
 out.write_text(json.dumps({"source": source, "matrix": matrix}), encoding="utf-8")

@@ -96,6 +96,29 @@ function collect(node, cls, out) {
 }
 const friTravel = collect(days[0], 'pl-travel', []);
 check('Friday shows camp -> Story Land leg', friTravel.some(t => /~\d+ min from camp/.test(t)));
+check('camp legs use calibrated guide times', friTravel.some(t => t.includes('~3 min from camp')));
 check('Friday shows back-to-camp leg', friTravel.some(t => /~\d+ min back to camp/.test(t)));
 check('narrative includes hop times', dyn.includes('🚗 ~'));
+
+// On-the-way badges: Fri seq camp -> Story Land -> back to camp gives a detour verdict
+function findEls(node, cls, out) {
+  (node.children || []).forEach(c => {
+    if ((c.className || '').includes(cls)) out.push(c);
+    findEls(c, cls, out);
+  });
+  return out;
+}
+const badges = findEls(ids['pl-days'], 'pl-otw', []);
+check('detour badges render', badges.length > 0 &&
+  badges.every(b => / (on the way!|slight detour|out of the way!)$/.test(b.textContent)));
+
+// Focus mode: switch to Attractions tab, click Friday Morning slot (anchor = Story Land)
+ids['pl-tabs'].children[4].listeners.click[0]();
+const drops = findEls(ids['pl-days'].children[0], 'pl-drop', []);
+drops[0].listeners.click[0]();
+const dots = findEls(ids['pl-chips'], 'pl-dot', []);
+check('focus mode colors palette chips', dots.length > 10);
+check('focus note is visible with anchor name', ids['pl-focus'].hidden === false);
+check('new attractions present (Attitash chip)',
+  findEls(ids['pl-chips'], 'pl-chip', []).some(c => collect(c, 'nm', []).join('').includes('Attitash')));
 process.exit(fail);
