@@ -62,6 +62,9 @@
     .pl-focus{margin:0 0 8px;font-size:12px;color:var(--muted);background:var(--stone);
       border:1px solid var(--line);border-radius:9px;padding:6px 9px;line-height:1.6;}
     .pl-drop.focus{outline:2px solid var(--sun);outline-offset:1px;}
+    .pl-togo{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#7a5cc0;flex-shrink:0;cursor:pointer;white-space:nowrap;}
+    .pl-togo input{accent-color:#7a5cc0;margin:0;}
+    .pl-entry.togo{border-left-color:#7a5cc0;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -244,7 +247,11 @@
     42,43,44,45,46,47,48,49,50
   ];
   var TRAVEL=null;/*__TRAVEL__*/
-  function locOf(en){return typeof en==="number"?LOC[en]:null;}
+  /* Takeout ("send dad") entries are stored as itemId+1000 — same number slot in
+     share links and localStorage, so old links stay valid. Eats only. */
+  function isTakeout(en){return typeof en==="number"&&en>=1000;}
+  function baseId(en){return isTakeout(en)?en-1000:en;}
+  function locOf(en){return typeof en==="number"?LOC[baseId(en)]:null;}
   function hopMin(a,b){
     if(a==null||b==null||a===b||!TRAVEL||!TRAVEL[a])return 0;
     return TRAVEL[a][b]||0;
@@ -294,7 +301,10 @@
             try{p[d.k][si].push(decodeURIComponent(tok.slice(1)).slice(0,60));}catch(e){}
           }else{
             var n=parseInt(tok,10);
-            if(!isNaN(n)&&n>=0&&n<ITEMS.length)p[d.k][si].push(n);
+            if(!isNaN(n)&&n>=0){
+              var b=n>=1000?n-1000:n;
+              if(b<ITEMS.length&&(n<1000||ITEMS[b].g==="e"))p[d.k][si].push(n);
+            }
           }
         });
       });
@@ -322,13 +332,16 @@
     if(!focusSel)return null;
     var slots=plan[focusSel.day];
     function lastLoc(list){
-      for(var i=list.length-1;i>=0;i--){var l=locOf(list[i]);if(l!=null)return {loc:l,en:list[i]};}
+      for(var i=list.length-1;i>=0;i--){
+        if(isTakeout(list[i]))continue; /* family doesn't go on dad's run */
+        var l=locOf(list[i]);if(l!=null)return {loc:l,en:list[i]};
+      }
       return null;
     }
     var a=lastLoc(slots[focusSel.slot]);
     for(var s=focusSel.slot-1;!a&&s>=0;s--)a=lastLoc(slots[s]);
     if(!a)return {loc:0,name:"camp"};
-    return {loc:a.loc,name:a.loc===0?"camp":ITEMS[a.en].n};
+    return {loc:a.loc,name:a.loc===0?"camp":ITEMS[baseId(a.en)].n};
   }
   function updateFocusNote(){
     var el=$("pl-focus");
@@ -411,7 +424,7 @@
   }
 
   /* --- days & slots --- */
-  function entryLabel(en){return typeof en==="number"?ITEMS[en].n:en;}
+  function entryLabel(en){return typeof en==="number"?ITEMS[baseId(en)].n:en;}
   function renderDays(){
     var box=$("pl-days");box.innerHTML="";
     DAYS.forEach(function(d){
@@ -422,14 +435,20 @@
          Badge = detour cost of stop B in A->B->C vs driving A->C direct. */
       var seq=[];
       plan[d.k].forEach(function(s,si2){s.forEach(function(en,ei2){
-        var l2=locOf(en);if(l2!=null)seq.push({si:si2,ei:ei2,l:l2});
+        var l2=locOf(en);if(l2!=null)seq.push({si:si2,ei:ei2,l:l2,to:isTakeout(en)});
       });});
       var conn={},pl=0;
       seq.forEach(function(cur,k){
+        if(cur.to){ /* dad's run: out-and-back, family stays put */
+          var tt=hopMin(pl,cur.l);
+          if(tt>0)conn[cur.si+"_"+cur.ei]={label:"🥡 Dad's run: ~"+tt+" min each way",badge:"",cls:""};
+          return;
+        }
         var t=hopMin(pl,cur.l);
         if(t>0){
           var c={label:"🚗 ~"+t+" min"+(pl===0?" from camp":(cur.l===0?" back to camp":" drive")),badge:"",cls:""};
-          var nx=seq[k+1];
+          var nx=null;
+          for(var k2=k+1;k2<seq.length;k2++){if(!seq[k2].to){nx=seq[k2];break;}}
           if(nx&&nx.l!==cur.l){
             var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
             if(detour<=5){c.badge="on the way!";c.cls="g";}
@@ -458,10 +477,10 @@
             }
             ul.appendChild(tr);
           }
-          var li=document.createElement("li");li.className="pl-entry";li.draggable=true;
+          var li=document.createElement("li");li.className="pl-entry"+(isTakeout(en)?" togo":"");li.draggable=true;
           var txt=document.createElement("span");txt.className="en";txt.textContent=entryLabel(en);
           if(typeof en==="number"){
-            var et=document.createElement("span");et.className="et";et.textContent=ITEMS[en].t;txt.appendChild(et);
+            var et=document.createElement("span");et.className="et";et.textContent=ITEMS[baseId(en)].t;txt.appendChild(et);
           }
           var x=document.createElement("button");x.type="button";x.className="pl-x";
           x.setAttribute("aria-label","Remove "+entryLabel(en));x.textContent="×";
@@ -469,7 +488,19 @@
             if(e&&e.stopPropagation)e.stopPropagation();
             plan[d.k][si].splice(ei,1);save("Removed");renderDays();
           });
-          li.appendChild(txt);li.appendChild(x);
+          if(typeof en==="number"&&ITEMS[baseId(en)].g==="e"){
+            var lab=document.createElement("label");lab.className="pl-togo";
+            lab.addEventListener("click",function(e){if(e&&e.stopPropagation)e.stopPropagation();});
+            var cb=document.createElement("input");cb.type="checkbox";cb.checked=isTakeout(en);
+            cb.addEventListener("change",function(){
+              plan[d.k][si][ei]=isTakeout(en)?baseId(en):baseId(en)+1000;
+              save(isTakeout(plan[d.k][si][ei])?"Dad's on it 🥡":"Eating there ✓");renderDays();
+            });
+            lab.appendChild(cb);lab.appendChild(document.createTextNode("🥡 send dad"));
+            li.appendChild(txt);li.appendChild(lab);li.appendChild(x);
+          }else{
+            li.appendChild(txt);li.appendChild(x);
+          }
           li.addEventListener("dragstart",function(e){
             e.dataTransfer.setData("text/plain","m"+d.k+si+":"+ei);e.dataTransfer.effectAllowed="move";
           });
@@ -537,6 +568,7 @@
     if(typeof en==="string")return "<b>"+esc(en)+"</b>";
     var it=ITEMS[en];
     if(it.g==="e"){
+      if(LOC[en]===0)return "<b>"+esc(it.n)+"</b> ("+esc(it.t)+")";
       return ["breakfast at","lunch at","an afternoon stop at","dinner at"][si]+" <b>"+esc(it.n)+"</b> ("+esc(it.t)+")";
     }
     if(it.g==="a")return "<b>"+esc(it.n)+"</b>"+(en===FUNSPOT_ID?"":" ("+esc(it.t)+")");
@@ -548,7 +580,7 @@
     var out="";
     DAYS.forEach(function(d){
       var cfg=PLAN_DAYS[d.k],slots=plan[d.k];
-      var picked={};slots.forEach(function(s){s.forEach(function(en){if(typeof en==="number")picked[en]=1;});});
+      var picked={};slots.forEach(function(s){s.forEach(function(en){if(typeof en==="number")picked[baseId(en)]=1;});});
       var rows="",any=false,hasFunspot=false,prevLocN=0;
       for(var si=0;si<4;si++){
         if(cfg.fixedBefore===si)rows+='<div class="slot"><div class="when">'+cfg.fixedWhen+'</div><div class="what">'+cfg.fixedWhat+'</div></div>';
@@ -556,7 +588,9 @@
         if(!entries.length)continue;
         any=true;
         var onDrive=cfg.drive&&cfg.drive.indexOf(si)>-1;
-        var parts=entries.map(function(en){
+        var reg=[],togo=[];
+        entries.forEach(function(en){if(isTakeout(en))togo.push(en);else reg.push(en);});
+        var parts=reg.map(function(en){
           if(en===FUNSPOT_ID)hasFunspot=true;
           var p=phrase(en,si);
           var l=locOf(en);
@@ -567,8 +601,15 @@
           }
           return p;
         });
-        rows+='<div class="slot"><div class="when">'+SLOTS[si]+'</div><div class="what">'
-          +(onDrive?cfg.driveLabel+": ":OPENERS[si]+" ")+parts.join(", then ")+'.</div></div>';
+        var sentence=parts.length?(onDrive?cfg.driveLabel+": ":OPENERS[si]+" ")+parts.join(", then ")+".":"";
+        togo.forEach(function(en){
+          var id=baseId(en),t=hopMin(prevLocN,LOC[id]);
+          sentence+=(sentence?" ":"")
+            +(prevLocN===0?"Everyone chills at camp":"Everyone hangs tight")
+            +" while <b>Dad</b> grabs <b>"+esc(ITEMS[id].n)+"</b> takeout 🥡"
+            +(t>0?" (~"+t+" min each way)":"")+" 😄.";
+        });
+        rows+='<div class="slot"><div class="when">'+SLOTS[si]+'</div><div class="what">'+sentence+'</div></div>';
       }
       if(!any)rows+='<div class="slot"><div class="when">All day</div><div class="what">Nothing picked yet — <a href="#builder">drag activities into '+d.name+' below</a> and this day writes itself. 👇</div></div>';
       if(hasFunspot)rows+='<div class="slot"><div class="when">🕹️ Detour</div><div class="what"><b>Funspot</b> adds about <b>35–40 minutes of total detour time</b> — worth it to visit the biggest arcade on the planet? <b>Yes.</b></div></div>';

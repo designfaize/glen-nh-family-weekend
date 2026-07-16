@@ -44,11 +44,12 @@ global.prompt = () => {};
 global.confirm = () => true;
 global.window = { print() {} };
 
-// Seed: items 0 & 63 in Fri/Morning + Laser Tag (9) in Fri/Evening; custom text with
-// delimiters in Sat/Evening; Monday gets Funspot (81) in Midday plus garbage tokens
-// (out-of-range id, NaN, broken URI) that must be dropped silently. Sunday stays empty.
+// Seed: items 0 & 63 in Fri/Morning + Laser Tag (9) in Fri/Evening; custom text plus
+// takeout McDonald's (105+1000) in Sat/Evening; Monday gets Funspot (81) in Midday plus
+// garbage tokens (out-of-range id, NaN, takeout-flagged non-food 1063, broken URI) that
+// must be dropped silently. Sunday stays empty.
 store['glenPlanV1'] =
-  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ';|||;999,abc|81|~%|';
+  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063|81|~%|';
 
 eval(m[1]);
 
@@ -72,8 +73,8 @@ const p = new URL(global.__copied).searchParams.get('p');
 let fail = 0;
 function check(label, cond) { console.log((cond ? 'PASS' : 'FAIL') + ': ' + label); if (!cond) fail = 1; }
 check('Friday loaded 3 entries from storage', friEntries === 3);
-check('Saturday loaded 1 custom entry', satEntries === 1);
-check('Monday kept Funspot, dropped 3 garbage tokens', monEntries === 1);
+check('Saturday loaded custom + takeout entries', satEntries === 2);
+check('Monday kept Funspot, dropped 4 garbage tokens', monEntries === 1);
 check('Friday palette rendered chips (10 expected)', chips === 10);
 check('share URL round-trips custom text', typeof p === 'string' && p.includes('~Pool%2C%20time%3B%20fun%7Cx'));
 check('share URL keeps numeric ids', typeof p === 'string' && p.indexOf('0,63') === 0);
@@ -121,4 +122,13 @@ check('focus mode colors palette chips', dots.length > 10);
 check('focus note is visible with anchor name', ids['pl-focus'].hidden === false);
 check('new attractions present (Attitash chip)',
   findEls(ids['pl-chips'], 'pl-chip', []).some(c => collect(c, 'nm', []).join('').includes('Attitash')));
+
+// Takeout: Sat evening has McDonald's as a dad-run (1105)
+const satCard = ids['pl-days'].children[1];
+check('takeout entry gets send-dad checkbox', findEls(satCard, 'pl-togo', []).length > 0);
+check('takeout connector shows each-way run', collect(satCard, 'pl-travel', []).some(t => t.includes("Dad's run") && t.includes('each way')));
+check('regular food entries also get the checkbox', findEls(ids['pl-days'], 'pl-togo', []).length >= 1);
+const dyn2 = ids['dyn-days'].innerHTML;
+check('narrative sends dad for takeout', dyn2.includes('while <b>Dad</b> grabs <b>McDonald') && dyn2.includes('each way'));
+check('share URL preserves takeout flag', new URL(global.__copied).searchParams.get('p').includes('1105'));
 process.exit(fail);
