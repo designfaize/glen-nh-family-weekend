@@ -224,4 +224,15 @@ check('day-card sidebar links to Google Maps', dyn3.includes('Open this route in
 check('dad runs stay off route maps and links',
   dyn3.split('Open this route in Google Maps').length - 1 === 2 &&
   dyn3.split('class="pl-gmap-frame"').length - 1 === 2);
+
+// Ratings: turn the free filter back off, open the Eats tab
+ids['pl-filters'].children[2].listeners.click[0]();
+ids['pl-tabs'].children[5].listeners.click[0]();
+const eatChips = findEls(ids['pl-chips'], 'pl-chip', []);
+check('rated eats show TripAdvisor stars', findEls(ids['pl-chips'], 'rate', []).some(r => r.textContent.includes('★ 4.6')));
+check('chains stay unrated', (() => {
+  const mcd = eatChips.find(c => collect(c, 'nm', []).join('').includes("McDonald's"));
+  return mcd && findEls(mcd, 'rate', []).length === 0;
+})());
+check('guide restaurant cards show ratings', src.includes('<span class="ta-rate">★ 4.6</span>') && src.includes('ta-rate">★ 4.0'));
 process.exit(fail);

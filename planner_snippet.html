@@ -31,6 +31,7 @@
     .pl-chip .nm{font-weight:600;}
     .pl-chip .tm{font-size:11.5px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
     .pl-chip .fee{color:#c0562b;font-weight:700;}
+    .pl-chip .rate{color:#b98a12;font-weight:800;}
     .pl-custom{display:flex;gap:6px;margin-top:10px;}
     .pl-custom input{flex:1;min-width:0;font-family:inherit;font-size:13px;padding:7px 10px;
       border:1px solid var(--line);border-radius:9px;background:var(--stone);}
@@ -94,7 +95,7 @@
 
   <section id="builder">
     <h2><span class="em">🧩</span> Build your own itinerary</h2>
-    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above. Cost tags are rough, per person: <span style="color:#c0562b;font-weight:700;">$</span> pocket change → <span style="color:#c0562b;font-weight:700;">$$$$$</span> big-ticket; no tag = free.</p>
+    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above. Cost tags are rough, per person: <span style="color:#c0562b;font-weight:700;">$</span> pocket change → <span style="color:#c0562b;font-weight:700;">$$$$$</span> big-ticket; no tag = free. <span style="color:#b98a12;font-weight:700;">★</span> = TripAdvisor rating (July 2026 snapshot).</p>
 
     <div class="pl-toolbar">
       <button type="button" id="pl-share" class="pl-btn pl-btn-primary">🔗 Copy share link</button>
@@ -274,6 +275,8 @@
    [5,[75,78]]
   ].forEach(function(t){t[1].forEach(function(i){PRICE[i]=t[0];});});
   function priceTag(id){return PRICE[id]?"$$$$$".slice(0,PRICE[id]):"";}
+  /* TripAdvisor ratings, verified July 2026. Chains/stores left unrated on purpose. */
+  var RATING={87:4.0,88:4.6,90:4.1,91:4.2,92:4.6,93:4.3,94:4.4,95:4.5,96:4.3,97:4.5,99:3.9,100:4.1};
   var FUNSPOT_ID=81;
   /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
      All camp events are location 0 (Jellystone). Append in lockstep with ITEMS. */
@@ -476,6 +479,10 @@
         var f=document.createElement("span");f.className="fee";f.textContent=" "+priceTag(id);
         tm.appendChild(f);
       }
+      if(RATING[id]){
+        var rt=document.createElement("span");rt.className="rate";rt.textContent=" ★ "+RATING[id].toFixed(1);
+        tm.appendChild(rt);
+      }
       if(INDOOR[id])tm.appendChild(document.createTextNode(" ☔"));
       b.appendChild(nm);b.appendChild(tm);
       if(anc&&(it.g==="a"||it.g==="e")){
@@ -586,6 +593,7 @@
             var et=document.createElement("span");et.className="et";
             et.textContent=ITEMS[bid].t.replace(/ ?· ?\$/,"")
               +(PRICE[bid]?" · "+priceTag(bid):"")
+              +(RATING[bid]?" · ★ "+RATING[bid].toFixed(1):"")
               +(INDOOR[bid]?" · ☔ indoor":"");
             txt.appendChild(et);
           }

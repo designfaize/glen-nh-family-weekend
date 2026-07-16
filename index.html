@@ -49,6 +49,7 @@
   .tag.trail{color:#3f8a4f;}
   .tag.rain{color:#7a5cc0;}
   .tag.eat{color:#c0562b;}
+  .ta-rate{display:inline-block;font-size:12px;font-weight:800;color:#b98a12;margin-bottom:2px;}
   .day{background:#fff;border:1px solid var(--line);border-left:6px solid var(--sun);border-radius:12px;
     padding:18px 20px;margin-bottom:14px;}
   .day h3{margin:0 0 10px;font-size:19px;color:var(--pine);}
@@ -309,6 +310,7 @@
     .pl-chip .nm{font-weight:600;}
     .pl-chip .tm{font-size:11.5px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
     .pl-chip .fee{color:#c0562b;font-weight:700;}
+    .pl-chip .rate{color:#b98a12;font-weight:800;}
     .pl-custom{display:flex;gap:6px;margin-top:10px;}
     .pl-custom input{flex:1;min-width:0;font-family:inherit;font-size:13px;padding:7px 10px;
       border:1px solid var(--line);border-radius:9px;background:var(--stone);}
@@ -372,7 +374,7 @@
 
   <section id="builder">
     <h2><span class="em">🧩</span> Build your own itinerary</h2>
-    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above. Cost tags are rough, per person: <span style="color:#c0562b;font-weight:700;">$</span> pocket change → <span style="color:#c0562b;font-weight:700;">$$$$$</span> big-ticket; no tag = free.</p>
+    <p class="sub">Drag any activity into a day slot — on a phone, <b>tap the activity, then tap a slot</b>. Your plan saves automatically on this device, and <b>Copy share link</b> gives you a URL that opens your exact plan on anyone's device. <b>Tip:</b> click a slot that already has a stop in it and the Attractions &amp; Eats tabs color-code 🟢🟡🔴 by how close everything is to that stop. Every day also has a <b>☔ rain plan</b> tab — stage an indoor backup (use the <b>☔ indoor only</b> filter) and it shows up as Plan B in the day-by-day above. Cost tags are rough, per person: <span style="color:#c0562b;font-weight:700;">$</span> pocket change → <span style="color:#c0562b;font-weight:700;">$$$$$</span> big-ticket; no tag = free. <span style="color:#b98a12;font-weight:700;">★</span> = TripAdvisor rating (July 2026 snapshot).</p>
 
     <div class="pl-toolbar">
       <button type="button" id="pl-share" class="pl-btn pl-btn-primary">🔗 Copy share link</button>
@@ -552,6 +554,8 @@
    [5,[75,78]]
   ].forEach(function(t){t[1].forEach(function(i){PRICE[i]=t[0];});});
   function priceTag(id){return PRICE[id]?"$$$$$".slice(0,PRICE[id]):"";}
+  /* TripAdvisor ratings, verified July 2026. Chains/stores left unrated on purpose. */
+  var RATING={87:4.0,88:4.6,90:4.1,91:4.2,92:4.6,93:4.3,94:4.4,95:4.5,96:4.3,97:4.5,99:3.9,100:4.1};
   var FUNSPOT_ID=81;
   /* LOC[i] = location id for ITEMS[i] (index into the TRAVEL matrix; see gen_travel.py).
      All camp events are location 0 (Jellystone). Append in lockstep with ITEMS. */
@@ -754,6 +758,10 @@
         var f=document.createElement("span");f.className="fee";f.textContent=" "+priceTag(id);
         tm.appendChild(f);
       }
+      if(RATING[id]){
+        var rt=document.createElement("span");rt.className="rate";rt.textContent=" ★ "+RATING[id].toFixed(1);
+        tm.appendChild(rt);
+      }
       if(INDOOR[id])tm.appendChild(document.createTextNode(" ☔"));
       b.appendChild(nm);b.appendChild(tm);
       if(anc&&(it.g==="a"||it.g==="e")){
@@ -864,6 +872,7 @@
             var et=document.createElement("span");et.className="et";
             et.textContent=ITEMS[bid].t.replace(/ ?· ?\$/,"")
               +(PRICE[bid]?" · "+priceTag(bid):"")
+              +(RATING[bid]?" · ★ "+RATING[bid].toFixed(1):"")
               +(INDOOR[bid]?" · ☔ indoor":"");
             txt.appendChild(et);
           }
@@ -1212,29 +1221,29 @@
   <!-- RESTAURANTS -->
   <section id="eats">
     <h2><span class="em">🍔</span> Where to eat</h2>
-    <p class="sub">A mix of family-friendly, kid-approved, and worth-the-splurge — closest to camp first.</p>
+    <p class="sub">A mix of family-friendly, kid-approved, and worth-the-splurge — closest to camp first. ★ = TripAdvisor rating, July 2026 snapshot.</p>
 
     <h3 style="margin:8px 0 2px;color:var(--pine);font-size:17px;">Right in Glen / Bartlett (closest)</h3>
     <div class="grid">
-      <div class="card"><div class="tag eat">🍔 Steaks · Pub · Family</div><h3><a href="https://www.redparkapub.com/" target="_blank" rel="noopener">Red Parka Steakhouse &amp; Pub</a></h3><span class="drive">🚗 4 min · Glen</span><p>A White Mountains institution since the '70s — steaks, ribs, a salad bar in a VW Bug, and a fun, rowdy-in-a-good-way family vibe. Expect a wait on weekends.</p></div>
-      <div class="card"><div class="tag eat">🍩 Donuts · New American</div><h3><a href="https://ciderconh.com/" target="_blank" rel="noopener">White Mountain Cider Co.</a></h3><span class="drive">🚗 3 min · Glen</span><p>Famous fresh cider donuts and a gourmet market by day; an award-winning farm-to-table dinner by night. Grab donuts for the campsite.</p></div>
+      <div class="card"><div class="tag eat">🍔 Steaks · Pub · Family</div><h3><a href="https://www.redparkapub.com/" target="_blank" rel="noopener">Red Parka Steakhouse &amp; Pub</a></h3><span class="ta-rate">★ 4.0</span><span class="drive">🚗 4 min · Glen</span><p>A White Mountains institution since the '70s — steaks, ribs, a salad bar in a VW Bug, and a fun, rowdy-in-a-good-way family vibe. Expect a wait on weekends.</p></div>
+      <div class="card"><div class="tag eat">🍩 Donuts · New American</div><h3><a href="https://ciderconh.com/" target="_blank" rel="noopener">White Mountain Cider Co.</a></h3><span class="ta-rate">★ 4.6</span><span class="drive">🚗 3 min · Glen</span><p>Famous fresh cider donuts and a gourmet market by day; an award-winning farm-to-table dinner by night. Grab donuts for the campsite.</p></div>
       <div class="card"><div class="tag eat">🍺 Casual tavern</div><h3>Almost There Tavern</h3><span class="drive">🚗 3 min · Glen</span><p>Low-key local spot for burgers, wings, and a relaxed dinner close to camp — easy with tired kids after a park day.</p></div>
     </div>
 
     <h3 style="margin:20px 0 2px;color:var(--pine);font-size:17px;">North Conway (10–15 min)</h3>
     <div class="grid">
-      <div class="card"><div class="tag eat">🍔 Rustic American · Family</div><h3><a href="https://muddymoose.com/" target="_blank" rel="noopener">Muddy Moose</a></h3><span class="drive">🚗 12 min</span><p>Log-cabin atmosphere, big portions, a solid kids' menu, and the famous "Mud Pie." A reliable family favorite.</p></div>
-      <div class="card"><div class="tag eat">🍖 BBQ · Brewery</div><h3><a href="https://www.moatmountain.com/" target="_blank" rel="noopener">Moat Mountain Smoke House &amp; Brewing</a></h3><span class="drive">🚗 12 min</span><p>Smoked BBQ and wood-fired pizzas with house-brewed beer. Lively, family-welcome, and consistently one of the valley's best.</p></div>
-      <div class="card"><div class="tag eat">🍀 Irish pub · Views</div><h3><a href="https://www.maykellys.com/" target="_blank" rel="noopener">May Kelly's Cottage</a></h3><span class="drive">🚗 13 min</span><p>Hearty Irish-American plates and one of the best mountain-view patios around, with a big lawn for kids to roam.</p></div>
-      <div class="card"><div class="tag eat">🎿 Casual · Ski-lodge vibe</div><h3><a href="https://www.delaneys.com/" target="_blank" rel="noopener">Delaney's Hole in the Wall</a></h3><span class="drive">🚗 12 min</span><p>Wide-ranging menu (burgers to sushi), fun ski memorabilia everywhere, and a welcoming spot for families.</p></div>
-      <div class="card"><div class="tag eat">🍕 Wood-fired pizza</div><h3><a href="https://www.flatbreadcompany.com/" target="_blank" rel="noopener">Flatbread Company</a></h3><span class="drive">🚗 12 min</span><p>Organic, wood-fired flatbread pizzas — kids can watch the fire oven. Casual and easy.</p></div>
+      <div class="card"><div class="tag eat">🍔 Rustic American · Family</div><h3><a href="https://muddymoose.com/" target="_blank" rel="noopener">Muddy Moose</a></h3><span class="ta-rate">★ 4.1</span><span class="drive">🚗 12 min</span><p>Log-cabin atmosphere, big portions, a solid kids' menu, and the famous "Mud Pie." A reliable family favorite.</p></div>
+      <div class="card"><div class="tag eat">🍖 BBQ · Brewery</div><h3><a href="https://www.moatmountain.com/" target="_blank" rel="noopener">Moat Mountain Smoke House &amp; Brewing</a></h3><span class="ta-rate">★ 4.2</span><span class="drive">🚗 12 min</span><p>Smoked BBQ and wood-fired pizzas with house-brewed beer. Lively, family-welcome, and consistently one of the valley's best.</p></div>
+      <div class="card"><div class="tag eat">🍀 Irish pub · Views</div><h3><a href="https://www.maykellys.com/" target="_blank" rel="noopener">May Kelly's Cottage</a></h3><span class="ta-rate">★ 4.6</span><span class="drive">🚗 13 min</span><p>Hearty Irish-American plates and one of the best mountain-view patios around, with a big lawn for kids to roam.</p></div>
+      <div class="card"><div class="tag eat">🎿 Casual · Ski-lodge vibe</div><h3><a href="https://www.delaneys.com/" target="_blank" rel="noopener">Delaney's Hole in the Wall</a></h3><span class="ta-rate">★ 4.3</span><span class="drive">🚗 12 min</span><p>Wide-ranging menu (burgers to sushi), fun ski memorabilia everywhere, and a welcoming spot for families.</p></div>
+      <div class="card"><div class="tag eat">🍕 Wood-fired pizza</div><h3><a href="https://www.flatbreadcompany.com/" target="_blank" rel="noopener">Flatbread Company</a></h3><span class="ta-rate">★ 4.4</span><span class="drive">🚗 12 min</span><p>Organic, wood-fired flatbread pizzas — kids can watch the fire oven. Casual and easy.</p></div>
     </div>
 
     <h3 style="margin:20px 0 2px;color:var(--pine);font-size:17px;">Breakfast &amp; treats</h3>
     <div class="grid">
-      <div class="card"><div class="tag eat">🥞 Breakfast · Views</div><h3><a href="https://www.bannersnh.com/" target="_blank" rel="noopener">Banners Restaurant — Conway</a></h3><span class="drive">🚗 15 min</span><p>Big breakfasts with a mountain view to fuel a day of adventuring.</p></div>
-      <div class="card"><div class="tag eat">🥞 Breakfast favorite</div><h3>Priscilla's — North Conway</h3><span class="drive">🚗 12 min</span><p>A beloved local breakfast/lunch spot — go early, it fills up fast on weekends.</p></div>
-      <div class="card"><div class="tag eat">🍨 Breakfast &amp; lunch</div><h3>Peach's — North Conway</h3><span class="drive">🚗 12 min</span><p>Cozy, home-style breakfast and lunch that regulars swear by.</p></div>
+      <div class="card"><div class="tag eat">🥞 Breakfast · Views</div><h3><a href="https://www.bannersnh.com/" target="_blank" rel="noopener">Banners Restaurant — Conway</a></h3><span class="ta-rate">★ 4.5</span><span class="drive">🚗 15 min</span><p>Big breakfasts with a mountain view to fuel a day of adventuring.</p></div>
+      <div class="card"><div class="tag eat">🥞 Breakfast favorite</div><h3>Priscilla's — North Conway</h3><span class="ta-rate">★ 4.3</span><span class="drive">🚗 12 min</span><p>A beloved local breakfast/lunch spot — go early, it fills up fast on weekends.</p></div>
+      <div class="card"><div class="tag eat">🍨 Breakfast &amp; lunch</div><h3>Peach's — North Conway</h3><span class="ta-rate">★ 4.5</span><span class="drive">🚗 12 min</span><p>Cozy, home-style breakfast and lunch that regulars swear by.</p></div>
       <div class="card"><div class="tag eat">🍬 Candy · General store</div><h3><a href="https://www.zebs.com/" target="_blank" rel="noopener">Zeb's General Store</a></h3><span class="drive">🚗 12 min</span><p>Old-time candy, fudge, and NH-made treats in the middle of North Conway village — a guaranteed kid hit.</p></div>
     </div>
 

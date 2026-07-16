@@ -84,6 +84,34 @@ eats_end = "  </section>\n\n  <!-- RAINY DAY -->"
 assert eats_end in html, "eats section end not found"
 html = html.replace(eats_end, FAST_FOOD + eats_end, 1)
 
+# 5b. TripAdvisor ratings on the guide's restaurant cards (verified July 2026)
+CARD_RATINGS = {
+    "Red Parka Steakhouse &amp; Pub</a></h3>": 4.0,
+    "White Mountain Cider Co.</a></h3>": 4.6,
+    "Muddy Moose</a></h3>": 4.1,
+    "Moat Mountain Smoke House &amp; Brewing</a></h3>": 4.2,
+    "May Kelly's Cottage</a></h3>": 4.6,
+    "Delaney's Hole in the Wall</a></h3>": 4.3,
+    "Flatbread Company</a></h3>": 4.4,
+    "Banners Restaurant — Conway</a></h3>": 4.5,
+    "<h3>Priscilla's — North Conway</h3>": 4.3,
+    "<h3>Peach's — North Conway</h3>": 4.5,
+}
+for anchor, stars in CARD_RATINGS.items():
+    assert anchor in html, f"rating anchor not found: {anchor}"
+    html = html.replace(anchor, anchor + f'<span class="ta-rate">★ {stars:.1f}</span>', 1)
+html = html.replace(
+    ".tag.eat{color:#c0562b;}",
+    ".tag.eat{color:#c0562b;}\n  .ta-rate{display:inline-block;font-size:12px;font-weight:800;color:#b98a12;margin-bottom:2px;}",
+    1,
+)
+old_eats_sub = '<p class="sub">A mix of family-friendly, kid-approved, and worth-the-splurge — closest to camp first.</p>'
+assert old_eats_sub in html, "eats sub not found"
+html = html.replace(
+    old_eats_sub,
+    '<p class="sub">A mix of family-friendly, kid-approved, and worth-the-splurge — closest to camp first. ★ = TripAdvisor rating, July 2026 snapshot.</p>',
+)
+
 # 6a. Pamphlet-rack classics section before the restaurants
 CLASSICS = """  <!-- PAMPHLET CLASSICS -->
   <section>
