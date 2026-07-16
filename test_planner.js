@@ -197,8 +197,9 @@ check('indoor filter keeps indoor attractions', filteredNames.some(n => n.includ
 check('indoor filter hides outdoor attractions', !filteredNames.some(n => n.includes("Diana's Baths")));
 check('chips carry indoor badge', collect(ids['pl-chips'], 'tm', []).some(t => t.includes('☔')));
 
-// Route sketch map in the day-by-day plan
-check('day cards include a route mini-map', dyn3.includes('class="pl-map"') && dyn3.includes('★ = camp'));
+// Embedded real Google Map in the day-by-day plan
+check('day cards embed a real Google Map', dyn3.includes('class="pl-gmap-frame"') &&
+  dyn3.includes('google.com/maps/embed?origin=mfe&amp;pb=!1m') && dyn3.includes('!1d44.1!2d-71.192'));
 
 // Price tiers: Kahuna chip shows $$$ (indoor filter still on, Attractions tab active)
 check('chips show price tiers', findEls(ids['pl-chips'], 'fee', []).some(f => f.textContent.trim() === '$$$'));
@@ -219,8 +220,8 @@ check('builder days get Google Maps route button', gmapBtns.length === 3 &&
   gmapBtns.every(b => b.href.startsWith('https://www.google.com/maps/dir/?api=1') && b.href.includes('origin=44.1,')));
 check('Monday route carries waypoints to home', gmapBtns.some(b => b.href.includes('waypoints=') && b.href.includes('42.594,-71.016')));
 check('day-card sidebar links to Google Maps', dyn3.includes('Open this route in Google Maps'));
-// Dad runs never appear on family route maps: only Fri + Mon have sketches/links
+// Dad runs never appear on family route maps: only Fri + Mon have embeds/links
 check('dad runs stay off route maps and links',
   dyn3.split('Open this route in Google Maps').length - 1 === 2 &&
-  dyn3.split('class="pl-map"').length - 1 === 2);
+  dyn3.split('class="pl-gmap-frame"').length - 1 === 2);
 process.exit(fail);

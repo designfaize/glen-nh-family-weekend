@@ -355,8 +355,7 @@
       border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
     .pl-filter.on{background:var(--forest2);border-color:var(--forest2);color:#fff;}
     #dyn-days .rainrow .when{color:var(--sky);}
-    .pl-map{width:100%;height:auto;background:#eef6f0;border:1px solid #cfe3d5;border-radius:8px;margin-bottom:2px;display:block;}
-    .pl-map-cap{font-size:10px;color:var(--muted);text-align:center;margin:0 0 4px;}
+    .pl-gmap-frame{width:100%;height:172px;border:1px solid #cfe3d5;border-radius:8px;display:block;margin-bottom:6px;background:#eef6f0;}
     .pl-gmap{display:block;text-align:center;font-size:11px;font-weight:700;margin:0 0 10px;color:var(--sky);text-decoration:none;}
     .pl-gmap:hover{text-decoration:underline;}
     .pl-daytabs a.pl-gmapbtn{text-decoration:none;background:#e8f1fb;border-color:#bcd6ef;color:#2a5d8a;}
@@ -977,43 +976,21 @@
     if(mids.length)u+="&waypoints="+mids.map(cs).join("%7C");
     return u;
   }
-  /* mini route-sketch map for a day: main-plan stops in order, camp = ★ */
-  function dayMap(dayK){
-    if(typeof COORDS==="undefined"||!COORDS)return "";
-    var pts=[{lat:COORDS[0][0],lon:COORDS[0][1],camp:true}],lastLoc=0;
-    plan[dayK].forEach(function(s){s.forEach(function(en){
+  /* embedded real Google Map for a day's route: Google's keyless /maps/embed
+     endpoint with the pb-encoded directions (camp + each stop, dad runs excluded) */
+  function gmapsEmbedUrl(dayK,grid){
+    if(typeof COORDS==="undefined"||!COORDS)return null;
+    var pts=[0],last=0;
+    (grid||plan)[dayK].forEach(function(s){s.forEach(function(en){
       if(isTakeout(en))return;
       var l=locOf(en);
-      if(l==null||l===lastLoc)return;
-      pts.push({lat:COORDS[l][0],lon:COORDS[l][1],home:l===LOC[HOME_ID]});
-      lastLoc=l;
+      if(l==null||l===last)return;
+      pts.push(l);last=l;
     });});
-    if(pts.length<2)return "";
-    var minLa=1e9,maxLa=-1e9,minLo=1e9,maxLo=-1e9;
-    pts.forEach(function(p){
-      minLa=Math.min(minLa,p.lat);maxLa=Math.max(maxLa,p.lat);
-      minLo=Math.min(minLo,p.lon);maxLo=Math.max(maxLo,p.lon);
-    });
-    var W=186,H=120,pad=16;
-    var dLa=Math.max(maxLa-minLa,0.02),dLo=Math.max(maxLo-minLo,0.02);
-    function X(p){return pad+(p.lon-minLo)/dLo*(W-2*pad);}
-    function Y(p){return H-pad-(p.lat-minLa)/dLa*(H-2*pad);}
-    var path="";
-    pts.forEach(function(p,i){path+=(i?"L":"M")+X(p).toFixed(1)+" "+Y(p).toFixed(1);});
-    var svg='<svg class="pl-map" viewBox="0 0 '+W+' '+H+'" aria-hidden="true">'
-      +'<path d="'+path+'" fill="none" stroke="#2e7d52" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round" opacity=".7"/>';
-    var n=0;
-    pts.forEach(function(p){
-      var x=X(p).toFixed(1);
-      if(p.camp)svg+='<text x="'+x+'" y="'+(Y(p)+5).toFixed(1)+'" text-anchor="middle" font-size="15" fill="#e8a838">★</text>';
-      else if(p.home)svg+='<text x="'+x+'" y="'+(Y(p)+4).toFixed(1)+'" text-anchor="middle" font-size="11">🏠</text>';
-      else{
-        n++;
-        svg+='<circle cx="'+x+'" cy="'+Y(p).toFixed(1)+'" r="8" fill="#2e7d52"/>'
-          +'<text x="'+x+'" y="'+(Y(p)+3.5).toFixed(1)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">'+n+'</text>';
-      }
-    });
-    return svg+'</svg><div class="pl-map-cap">day route · ★ = camp · not to scale</div>';
+    if(pts.length<2)return null;
+    var pb="!1m"+(4*pts.length+1)+"!4m"+(4*pts.length);
+    pts.forEach(function(l){pb+="!4m3!3m2!1d"+COORDS[l][0]+"!2d"+COORDS[l][1];});
+    return "https://www.google.com/maps/embed?origin=mfe&pb="+pb;
   }
   function renderPlan(){
     var box=document.getElementById("dyn-days");
@@ -1067,7 +1044,8 @@
         rows+='<div class="slot rainrow"><div class="when">☔ Heads-up</div><div class="what">Forecast looks wet — tap <b>☔ rain plan</b> on this day in the <a href="#builder">builder</a> to stage indoor backups (filter the palette with <b>☔ indoor only</b>).</div></div>';
       }
       var gmu=gmapsUrl(d.k,plan);
-      var side=dayMap(d.k)
+      var emb=gmapsEmbedUrl(d.k,plan);
+      var side=(emb?'<iframe class="pl-gmap-frame" src="'+emb.replace(/&/g,"&amp;")+'" loading="lazy" title="'+d.name+' route map" referrerpolicy="no-referrer-when-downgrade"></iframe>':'')
         +(gmu?'<a class="pl-gmap" href="'+gmu.replace(/&/g,"&amp;")+'" target="_blank" rel="noopener">🗺️ Open this route in Google Maps ↗</a>':'')
         +'<div class="day-camp-h">'+cfg.side+'</div><ul>';
       cfg.list.forEach(function(ev){
