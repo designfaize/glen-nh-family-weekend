@@ -77,7 +77,9 @@
       border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;}
     .pl-filter.on{background:var(--forest2);border-color:var(--forest2);color:#fff;}
     #dyn-days .rainrow .when{color:var(--sky);}
-    .pl-gmap-frame{width:100%;height:172px;border:1px solid #cfe3d5;border-radius:8px;display:block;margin-bottom:6px;background:#eef6f0;}
+    .pl-gmap-frame{width:100%;height:200px;border:1px solid #cfe3d5;border-radius:8px;display:block;background:#eef6f0;}
+    .pl-maprow{margin-top:14px;}
+    .pl-maprow .pl-gmap{text-align:left;margin:6px 0 0;display:inline-block;}
     .pl-gmap{display:block;text-align:center;font-size:11px;font-weight:700;margin:0 0 10px;color:var(--sky);text-decoration:none;}
     .pl-gmap:hover{text-decoration:underline;}
     .pl-daytabs a.pl-gmapbtn{text-decoration:none;background:#e8f1fb;border-color:#bcd6ef;color:#2a5d8a;}
@@ -767,9 +769,12 @@
       }
       var gmu=gmapsUrl(d.k,plan);
       var emb=gmapsEmbedUrl(d.k,plan);
-      var side=(emb?'<iframe class="pl-gmap-frame" src="'+emb.replace(/&/g,"&amp;")+'" loading="lazy" title="'+d.name+' route map" referrerpolicy="no-referrer-when-downgrade"></iframe>':'')
-        +(gmu?'<a class="pl-gmap" href="'+gmu.replace(/&/g,"&amp;")+'" target="_blank" rel="noopener">🗺️ Open this route in Google Maps ↗</a>':'')
-        +'<div class="day-camp-h">'+cfg.side+'</div><ul>';
+      if(emb){
+        rows+='<div class="pl-maprow"><iframe class="pl-gmap-frame" src="'+emb.replace(/&/g,"&amp;")+'" loading="lazy" title="'+d.name+' route map" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+          +(gmu?'<a class="pl-gmap" href="'+gmu.replace(/&/g,"&amp;")+'" target="_blank" rel="noopener">🗺️ Open this route in Google Maps ↗</a>':'')
+          +'</div>';
+      }
+      var side='<div class="day-camp-h">'+cfg.side+'</div><ul>';
       cfg.list.forEach(function(ev){
         var it=ITEMS[ev.id];
         side+='<li><span class="ct">'+ev.t+'</span><span>'
