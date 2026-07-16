@@ -31,13 +31,49 @@ html = html.replace(
     + '\n    <a class="basecamp" href="map.html" style="color:#fff;text-decoration:none;margin-left:6px;">🗺️ Family Fun Map</a></div>',
 )
 
-# 3. Splice in the planner section before the "Closest to camp" section
+# 3. Remove the fallback schedule table under the live calendar
+start = html.index('<p class="sub" style="margin-top:20px;">If the live calendar doesn')
+end = html.index("</div>", html.index("</table>", start)) + len("</div>")
+html = html[:start] + html[end:]
+
+# ...and the now-dangling reference to it
+old_ref = "tap <b>“Open the live calendar”</b> or use the printable list further down."
+assert old_ref in html, "calendar fallback reference not found"
+html = html.replace(old_ref, "tap <b>“Open the live calendar”</b>.")
+
+# 4. Static day cards -> dynamic container rendered from the builder state
+start = html.index('<div class="day">')
+end = html.index('<div class="note">')
+assert start < end, "day cards not where expected"
+html = html[:start] + '<div id="dyn-days"></div>\n\n    ' + html[end:]
+
+old_sub = (
+    '<p class="sub">Built around Jellystone. Mix and match — nothing here is locked in. '
+    "Mornings out, afternoons flexible (parks get hot; the campground pool is a great reset).</p>"
+)
+assert old_sub in html, "plan sub text not found"
+html = html.replace(
+    old_sub,
+    '<p class="sub">This plan writes itself from your picks in the <a href="#builder">itinerary builder below</a> — '
+    "drag things in down there and each day fills in up here. Friday check-in and the Monday rollout stay put.</p>",
+)
+
+# 5. Funspot detour callout in the "On the way home" box
+old_funspot = "aim to stop on the drive up or the drive home.</b>"
+assert old_funspot in html, "funspot sentence not found"
+html = html.replace(
+    old_funspot,
+    old_funspot
+    + " Figure about <b>35–40 minutes of total detour time</b> — worth it to visit the biggest arcade on the planet? <b>Yes.</b>",
+)
+
+# 6. Splice in the planner section before the "Closest to camp" section
 marker = "  <!-- CLOSEST -->"
 assert marker in html, "CLOSEST marker not found"
 snippet = (repo / "planner_snippet.html").read_text(encoding="utf-8")
 html = html.replace(marker, snippet + "\n\n" + marker, 1)
 
-# 4. Emoji favicon
+# 7. Emoji favicon
 assert "</title>" in html
 html = html.replace(
     "</title>",

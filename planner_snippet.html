@@ -53,6 +53,7 @@
       cursor:pointer;padding:0 3px;line-height:1;border-radius:4px;}
     .pl-entry .pl-x:hover{background:#fbe4e0;}
     .pl-empty-hint{font-size:11px;color:#b9b2a4;text-align:center;margin:auto 0;}
+    .day-camp .star{color:var(--sun);font-size:13px;}
     @media print{
       body.print-plan header.hero,body.print-plan .wrap>*:not(#builder){display:none !important;}
       body.print-plan #builder .pl-palette,body.print-plan .pl-toolbar,body.print-plan .pl-banner,
@@ -201,8 +202,11 @@
     {g:"e",n:"Zeb's General Store 🍬",t:"12 min · N. Conway"},
     {g:"e",n:"Hart's Turkey Farm 🦃",t:"on the drive home"},
     {g:"e",n:"Woodstock Inn Brewery 🍺",t:"on the drive home"},
-    {g:"e",n:"Campfire s'mores 🔥",t:"at your site"}
+    {g:"e",n:"Campfire s'mores 🔥",t:"at your site"},
+    {g:"e",n:"Zip's Pub at Cranmore 🍔",t:"Cranmore base lodge"},
+    {g:"e",n:"Meister Hut summit lunch 🚡",t:"Cranmore · via chairlift"}
   ];
+  var FUNSPOT_ID=81;
   var DAYS=[
     {k:"f",name:"Friday",date:"Jul 17",note:"arriving ~3pm"},
     {k:"s",name:"Saturday",date:"Jul 18",note:""},
@@ -367,6 +371,7 @@
       });
       box.appendChild(card);
     });
+    renderPlan();
   }
   function handleDrop(data,day,slot){
     if(!data)return;
@@ -380,6 +385,74 @@
         plan[day][slot].push(en);save("Moved ✓");renderDays();
       }
     }
+  }
+
+  /* --- dynamic day-by-day plan: writes the #dyn-days section further up the page.
+         Fixed anchors (Fri check-in, Mon rollout) and the "At Jellystone" sidebars
+         always render; everything else comes from the builder selections. --- */
+  var PLAN_DAYS={
+    f:{title:"Friday — Arrive & settle in",side:"🏕️ At Jellystone tonight",
+       list:[{t:"3:00",id:1},{t:"5:00",id:4},{t:"6:00",id:5},{t:"7:00",id:7},{t:"7:00",id:8},{t:"8:00",id:9}],
+       drive:[0,1],driveLabel:"On the drive up",fixedBefore:2,fixedWhen:"Afternoon",
+       fixedWhat:"Check in at <b>Jellystone</b> (~3pm), claim your site, and grab the printed activity schedule at the front desk."},
+    s:{title:"Saturday — Your big day out",side:"🏕️ At Jellystone today",
+       list:[{t:"11:30",id:14},{t:"2:00",id:19},{t:"2:00",id:20},{t:"5:00",id:24},{t:"7:00",id:27},{t:"8:00",id:29}]},
+    u:{title:"Sunday — Last full day of Santa's Summer Vacation",side:"🏕️ At Jellystone today",
+       list:[{t:"10:00",id:33},{t:"1:00",id:40},{t:"4:00",id:42},{t:"7:00",id:47},{t:"8:00",id:49},{t:"9:00",id:50}]},
+    m:{title:"Monday — Color Splash morning & the drive home",side:"🎨 At Jellystone this AM",
+       list:[{t:"9:00",id:52},{t:"12:00",id:58},{t:"2:00",id:60}],
+       note:"🌈 New theme: Color Splash! Monday times post on the board that morning — check at breakfast.",
+       drive:[1,2,3],driveLabel:"On the drive home",fixedBefore:1,fixedWhen:"Late AM",
+       fixedWhat:"Roll out south on <b>I‑93</b> toward home."}
+  };
+  var OPENERS=["Kick off the morning with","Midday, it's","In the afternoon,","Tonight it's"];
+  function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function phrase(en,si){
+    if(typeof en==="string")return "<b>"+esc(en)+"</b>";
+    var it=ITEMS[en];
+    if(it.g==="e"){
+      return ["breakfast at","lunch at","an afternoon stop at","dinner at"][si]+" <b>"+esc(it.n)+"</b> ("+esc(it.t)+")";
+    }
+    if(it.g==="a")return "<b>"+esc(it.n)+"</b>"+(en===FUNSPOT_ID?"":" ("+esc(it.t)+")");
+    return "<b>"+esc(it.n)+"</b> at "+esc(it.t.split("–")[0]);
+  }
+  function renderPlan(){
+    var box=document.getElementById("dyn-days");
+    if(!box)return;
+    var out="";
+    DAYS.forEach(function(d){
+      var cfg=PLAN_DAYS[d.k],slots=plan[d.k];
+      var picked={};slots.forEach(function(s){s.forEach(function(en){if(typeof en==="number")picked[en]=1;});});
+      var rows="",any=false,hasFunspot=false;
+      for(var si=0;si<4;si++){
+        if(cfg.fixedBefore===si)rows+='<div class="slot"><div class="when">'+cfg.fixedWhen+'</div><div class="what">'+cfg.fixedWhat+'</div></div>';
+        var entries=slots[si];
+        if(!entries.length)continue;
+        any=true;
+        var onDrive=cfg.drive&&cfg.drive.indexOf(si)>-1;
+        var parts=entries.map(function(en){
+          if(en===FUNSPOT_ID)hasFunspot=true;
+          return phrase(en,si);
+        });
+        rows+='<div class="slot"><div class="when">'+SLOTS[si]+'</div><div class="what">'
+          +(onDrive?cfg.driveLabel+": ":OPENERS[si]+" ")+parts.join(", then ")+'.</div></div>';
+      }
+      if(!any)rows+='<div class="slot"><div class="when">All day</div><div class="what">Nothing picked yet — <a href="#builder">drag activities into '+d.name+' below</a> and this day writes itself. 👇</div></div>';
+      if(hasFunspot)rows+='<div class="slot"><div class="when">🕹️ Detour</div><div class="what"><b>Funspot</b> adds about <b>35–40 minutes of total detour time</b> — worth it to visit the biggest arcade on the planet? <b>Yes.</b></div></div>';
+      var side='<div class="day-camp-h">'+cfg.side+'</div><ul>';
+      cfg.list.forEach(function(ev){
+        var it=ITEMS[ev.id];
+        side+='<li><span class="ct">'+ev.t+'</span><span>'
+          +(picked[ev.id]?'<span class="star">★</span> ':'')+esc(it.n)
+          +(it.t.indexOf("$")>-1?' <span class="fee">$</span>':'')+'</span></li>';
+      });
+      side+='</ul>';
+      if(cfg.note)side+='<div class="note-line">'+cfg.note+'</div>';
+      side+='<div class="note-line">★ = picked in your builder</div>';
+      out+='<div class="day"><h3>'+esc(cfg.title)+'</h3><div class="day-cols"><div class="day-main">'+rows
+        +'</div><aside class="day-camp">'+side+'</aside></div></div>';
+    });
+    box.innerHTML=out;
   }
 
   /* --- toolbar --- */
