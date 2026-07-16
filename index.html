@@ -718,7 +718,8 @@
          Badge = detour cost of stop B in A->B->C vs driving A->C direct. */
       var seq=[];
       plan[d.k].forEach(function(s,si2){s.forEach(function(en,ei2){
-        var l2=locOf(en);if(l2!=null)seq.push({si:si2,ei:ei2,l:l2,to:isTakeout(en)});
+        var l2=locOf(en);
+        if(l2!=null)seq.push({si:si2,ei:ei2,l:l2,to:isTakeout(en),g:typeof en==="number"?ITEMS[baseId(en)].g:null});
       });});
       var conn={},pl=0;
       seq.forEach(function(cur,k){
@@ -733,10 +734,16 @@
           var nx=null;
           for(var k2=k+1;k2<seq.length;k2++){if(!seq[k2].to){nx=seq[k2];break;}}
           if(nx&&nx.l!==cur.l){
-            var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
-            if(detour<=5){c.badge="on the way!";c.cls="g";}
-            else if(detour<=15){c.badge="slight detour";c.cls="y";}
-            else{c.badge="out of the way!";c.cls="r";}
+            if(nx.l===pl){
+              /* out-and-back: there's no "way" to be on — a food run is never
+                 "out of the way", it's just dad being a hero */
+              if(cur.g==="e"){c.badge="easy dad run! 🥡";c.cls="g";}
+            }else{
+              var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
+              if(detour<=5){c.badge="on the way!";c.cls="g";}
+              else if(detour<=15){c.badge="slight detour";c.cls="y";}
+              else{c.badge="out of the way!";c.cls="r";}
+            }
           }
           conn[cur.si+"_"+cur.ei]=c;
         }

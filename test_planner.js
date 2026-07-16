@@ -50,8 +50,10 @@ global.window = { print() {}, __wx: { '2026-07-18': { hi: 81, lo: 62, kind: 'rai
 // takeout McDonald's (105+1000) in Sat/Evening; Monday gets Funspot (81) in Midday plus
 // garbage tokens (out-of-range id, NaN, takeout-flagged non-food 1063, broken URI) that
 // must be dropped silently. Sunday stays empty.
+// Monday seq: Bear Mail (51, camp) -> McDonald's (105, not takeout) -> Wake Up (52, camp)
+// -> Funspot (81): the McD out-and-back must read "easy dad run!", never "out of the way!".
 store['glenPlanV1'] =
-  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063|81|~%|';
+  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52,81,~%|';
 
 eval(m[1]);
 
@@ -76,7 +78,7 @@ let fail = 0;
 function check(label, cond) { console.log((cond ? 'PASS' : 'FAIL') + ': ' + label); if (!cond) fail = 1; }
 check('Friday loaded 3 entries from storage', friEntries === 3);
 check('Saturday loaded custom + takeout entries', satEntries === 2);
-check('Monday kept Funspot, dropped 4 garbage tokens', monEntries === 1);
+check('Monday kept 4 valid entries, dropped 4 garbage tokens', monEntries === 4);
 check('Friday palette rendered chips (10 expected)', chips === 10);
 check('share URL round-trips custom text', typeof p === 'string' && p.includes('~Pool%2C%20time%3B%20fun%7Cx'));
 check('share URL keeps numeric ids', typeof p === 'string' && p.indexOf('0,63') === 0);
@@ -113,7 +115,14 @@ function findEls(node, cls, out) {
 }
 const badges = findEls(ids['pl-days'], 'pl-otw', []);
 check('detour badges render', badges.length > 0 &&
-  badges.every(b => / (on the way!|slight detour|out of the way!)$/.test(b.textContent)));
+  badges.every(b => / (on the way!|slight detour|out of the way!|easy dad run! 🥡)$/.test(b.textContent)));
+check('food out-and-back reads easy dad run', badges.some(b => b.textContent.includes('easy dad run!')));
+check('out-and-back never says out of the way', (() => {
+  const monBadges = findEls(ids['pl-days'].children[3], 'pl-otw', []);
+  // McD sits between two camp stops; its connector badge must not be a routing verdict
+  return !monBadges.some(b => b.textContent.includes('out of the way') &&
+    findEls(ids['pl-days'].children[3], 'pl-travel', []).indexOf(b) === 0);
+})());
 
 // Focus mode: switch to Attractions tab, click Friday Morning slot (anchor = Story Land)
 ids['pl-tabs'].children[4].listeners.click[0]();
