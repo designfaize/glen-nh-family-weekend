@@ -51,9 +51,10 @@ global.window = { print() {}, __wx: { '2026-07-18': { hi: 81, lo: 62, kind: 'rai
 // garbage tokens (out-of-range id, NaN, takeout-flagged non-food 1063, broken URI) that
 // must be dropped silently. Sunday stays empty.
 // Monday seq: Bear Mail (51, camp) -> McDonald's (105, not takeout) -> Wake Up (52, camp)
-// -> Funspot (81): the McD out-and-back must read "easy dad run!", never "out of the way!".
+// -> Funspot (81) -> Diana's (66). McD out-and-back must read "easy dad run!"; the
+// camp->Funspot leg is a huge detour vs Diana's but departs camp, so no verdict allowed.
 store['glenPlanV1'] =
-  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52,81,~%|';
+  '0,63|||9;|||~' + encodeURIComponent('Pool, time; fun|x') + ',1105;|||;999,abc,1063,51|105|52,81,~%|66';
 
 eval(m[1]);
 
@@ -78,7 +79,7 @@ let fail = 0;
 function check(label, cond) { console.log((cond ? 'PASS' : 'FAIL') + ': ' + label); if (!cond) fail = 1; }
 check('Friday loaded 3 entries from storage', friEntries === 3);
 check('Saturday loaded custom + takeout entries', satEntries === 2);
-check('Monday kept 4 valid entries, dropped 4 garbage tokens', monEntries === 4);
+check('Monday kept 5 valid entries, dropped 4 garbage tokens', monEntries === 5);
 check('Friday palette rendered chips (10 expected)', chips === 10);
 check('share URL round-trips custom text', typeof p === 'string' && p.includes('~Pool%2C%20time%3B%20fun%7Cx'));
 check('share URL keeps numeric ids', typeof p === 'string' && p.indexOf('0,63') === 0);
@@ -122,6 +123,17 @@ check('out-and-back never says out of the way', (() => {
   // McD sits between two camp stops; its connector badge must not be a routing verdict
   return !monBadges.some(b => b.textContent.includes('out of the way') &&
     findEls(ids['pl-days'].children[3], 'pl-travel', []).indexOf(b) === 0);
+})());
+check('legs departing camp never judged out of the way', (() => {
+  const monTravel = findEls(ids['pl-days'].children[3], 'pl-travel', []);
+  const fromCampLegs = monTravel.filter(t => t.textContent.includes('from camp'));
+  return fromCampLegs.length > 0 && fromCampLegs.every(t =>
+    findEls(t, 'pl-otw', []).every(b => !b.textContent.includes('out of the way')));
+})());
+check('mid-route detours still get called out', (() => {
+  // McD -> back to camp -> Funspot: the return-to-camp leg is a genuine mid-route detour
+  const monBadges = findEls(ids['pl-days'].children[3], 'pl-otw', []);
+  return monBadges.some(b => b.textContent.includes('out of the way'));
 })());
 
 // Focus mode: switch to Attractions tab, click Friday Morning slot (anchor = Story Land)

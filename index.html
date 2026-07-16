@@ -742,7 +742,8 @@
               var detour=t+hopMin(cur.l,nx.l)-hopMin(pl,nx.l);
               if(detour<=5){c.badge="on the way!";c.cls="g";}
               else if(detour<=15){c.badge="slight detour";c.cls="y";}
-              else{c.badge="out of the way!";c.cls="r";}
+              /* departing camp is a fresh choice, never "out of the way" */
+              else if(pl!==0){c.badge="out of the way!";c.cls="r";}
             }
           }
           conn[cur.si+"_"+cur.ei]=c;
